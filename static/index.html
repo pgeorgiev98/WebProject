@@ -1,0 +1,115 @@
+<html>
+    <head>
+        <style>
+            input, button {
+				padding: 10px;
+			}
+			table, th, td {
+				border: 1px solid black;
+			}
+			table {
+				empty-cells: show;
+			}
+			td:empty::after{
+				content: "\00a0";
+			}
+
+
+        </style>
+    </head>
+    <body>
+        <script>
+			table_data = [];
+
+			updateTable = function() {
+				var table = document.getElementById("document_table");
+				table.innerHTML = '';
+				var html = '';
+				var rows = table_data;
+				for (var y in rows) {
+					html += '<tr>';
+					var row = rows[y];
+					if (row.length == 0) {
+						html += '<td></td>';
+					} else {
+						for (var x in row) {
+							html += '<td>' + row[x] + '</td>';
+						}
+					}
+					html += '</tr>';
+				}
+				table.innerHTML = html;
+			}
+
+			getDocument = function() {
+				socket.send('{"command": "get_document_json"}');
+			}
+
+			connect = function() {
+				socket = new WebSocket('ws://localhost:8080');
+
+				socket.onmessage = function(message) {
+					//alert( message.data );
+					var obj = JSON.parse(message.data);
+					var command = obj['command'];
+					if (command == 'get_document_json') {
+						table_data = obj['data'];
+						updateTable();
+					} else if (command == 'set_cell') {
+						var x = obj['x'];
+						var y = obj['y'];
+						var value = obj['value'];
+						for (var i = table_data.length; i <= y; i++) {
+							table_data.push([]);
+						}
+						for (var i = table_data[y]; i <= x; i++) {
+							table_data[y].push('');
+						}
+						table_data[y][x] = value;
+						updateTable();
+					}
+				}
+
+				socket.onopen = function() {
+					// TODO: The ID here is hardcoded
+					socket.send('{"command": "open", "id": "00aaff"}');
+					getDocument();
+				}
+			}
+
+			setCell = function() {
+				var x = document.getElementById("input-x").value;
+				var y = document.getElementById("input-y").value;
+				var value = document.getElementById("input-value").value;
+
+				for (var i = table_data.length; i <= y; i++) {
+					table_data.push([]);
+				}
+				for (var i = table_data[y].length; i <= x; i++) {
+					table_data[y].push('');
+				}
+				table_data[y][x] = value;
+				updateTable();
+
+				socket.send('{"command": "set_cell", "x": ' + x + ', "y": ' + y + ', "value": "' + value + '"}');
+			}
+        </script>
+
+        <button onclick="connect()">Connect</button>
+        <button onclick="getDocument()">Get Document</button>
+
+		<br>
+
+		<label for="input-x">X: </label>
+		<input type="number" id="input-x" name="input-x" />
+		<label for="input-y">Y: </label>
+		<input type="number" id="input-y" name="input-y" />
+		<label for="input-value">Value: </label>
+		<input type="text" id="input-value" name="input-value" />
+
+        <button onclick="setCell()">Set</button>
+
+		<table id="document_table">
+		</table>
+    </body>
+</html>
