@@ -48,7 +48,7 @@ connect = function () {
             for (var i = table_data.length; i <= y; i++) {
                 table_data.push([]);
             }
-            for (var i = table_data[y]; i <= x; i++) {
+            for (var i = table_data[y].length; i <= x; i++) {
                 table_data[y].push('');
             }
             table_data[y][x] = value;
