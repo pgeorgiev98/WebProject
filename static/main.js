@@ -1,9 +1,16 @@
 table_data = [];
 
-updateTable = function () {
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var input = document.getElementById("input-value");
 
+var cellHeight = 30;
+var cellWidth = 80;
+var tableDimension = 10;
+
+var onFocus = [];
+
+updateTable = function () {
     ctx.canvas.width = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
 
@@ -11,20 +18,56 @@ updateTable = function () {
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
 
-    var tableDimension = 10;
-    var cellHeight = 30;
-    var cellWidth = 80;
-
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    for (var i = 0; i < tableDimension; i++) {
-        for (var j = 0; j < tableDimension; j++) {
-            ctx.strokeRect(j * cellWidth, i * cellHeight, cellWidth, cellHeight);
-            if(i < table_data.length && table_data[i].length > j)
-                ctx.fillText(table_data[i][j], j * cellWidth + (cellWidth / 2), i * cellHeight + (cellHeight / 2));
+    for (var row = 0; row < tableDimension; row++) {
+        for (var col = 0; col < tableDimension; col++) {
+            if (col == onFocus[0] && row == onFocus[1]) {
+                ctx.fillStyle = "lightblue";
+                ctx.fillRect(col * cellWidth, row * cellHeight, cellWidth, cellHeight);
+            }
+            ctx.strokeRect(col * cellWidth, row * cellHeight, cellWidth, cellHeight);
+            ctx.fillStyle = "black";
+            ctx.fillText(getCell(col, row), col * cellWidth + (cellWidth / 2), row * cellHeight + (cellHeight / 2));
         }
     }
+}
+
+onMouseClick = function (canvas, event) {
+    event.preventDefault();
+    rect = canvas.getBoundingClientRect();
+    col = event.clientX - rect.left;
+    row = event.clientY - rect.top;
+
+    col = Math.floor(col / cellWidth);
+    row = Math.floor(row / cellHeight);
+
+    onFocus = [col, row];
+
+    document.getElementById("input-x").value = col;
+    document.getElementById("input-y").value = row;
+    document.getElementById("input-value").value = getCell(col, row);
+    document.getElementById("input-value").focus();
+
+    updateTable();
+}
+
+canvas.addEventListener("mousedown", function (event) {
+    onMouseClick(canvas, event);
+});
+
+input.addEventListener("keyup", function (event) {
+    if (event.key == "Enter") {
+        event.preventDefault();
+        document.getElementById("set").click();
+    }
+});
+
+getCell = function (col, row) {
+    if (row < table_data.length && table_data[row].length > col)
+        return table_data[row][col];
+    else return "";
 }
 
 getDocument = function () {
