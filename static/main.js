@@ -1,16 +1,37 @@
-table_data = [];
-
 var canvas = document.getElementById("canvas");
-var ctx = canvas.getContext("2d");
 var input = document.getElementById("input-value");
+var ctx = canvas.getContext("2d");
 
 var cellHeight = 30;
 var cellWidth = 80;
 var tableDimension = 10;
 
-var onFocus = [];
+class Cell {
+    constructor(col, row) {
+        this.col = col;
+        this.row = row;
+        this.text = "";
+    }
+}
 
-updateTable = function () {
+class Table {
+    constructor(dimension) {
+        this.dimension = dimension;
+        this.cells = [];
+        for (var row = 0; row < dimension; row++) {
+            this.cells.push([]);
+        }
+        for (var row = 0; row < dimension; row++) {
+            for (var col = 0; col < dimension; col++) {
+                var cell = new Cell(col, row);
+                this.cells[row].push(cell);
+            }
+        }
+        this.onFocus = this.cells[0][0];
+    }
+}
+
+Table.prototype.update = function () {
     ctx.canvas.width = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
 
@@ -21,18 +42,37 @@ updateTable = function () {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    for (var row = 0; row < tableDimension; row++) {
-        for (var col = 0; col < tableDimension; col++) {
-            if (col == onFocus[0] && row == onFocus[1]) {
+    for (var row = 0; row < this.dimension; row++) {
+        for (var col = 0; col < this.dimension; col++) {
+            if (col == this.onFocus.col && row == this.onFocus.row) {
                 ctx.fillStyle = "lightblue";
                 ctx.fillRect(col * cellWidth, row * cellHeight, cellWidth, cellHeight);
             }
             ctx.strokeRect(col * cellWidth, row * cellHeight, cellWidth, cellHeight);
             ctx.fillStyle = "black";
-            ctx.fillText(getCell(col, row), col * cellWidth + (cellWidth / 2), row * cellHeight + (cellHeight / 2));
+            cell = this.getCell(row, col);
+            ctx.fillText(cell.text, col * cellWidth + (cellWidth / 2), row * cellHeight + (cellHeight / 2));
         }
     }
 }
+
+Table.prototype.getCell = function (row, col) {
+    if (row < this.dimension && this.dimension > col)
+        return this.cells[row][col];
+    else return "";
+}
+
+Table.prototype.fromArray = function (data) {
+    for (var row in data) {
+        for (var col in data[row]) {
+            //TODO
+            if (row < this.dimension && col < this.dimension)
+                this.cells[row][col].text = data[row][col];
+        }
+    }
+}
+
+var table = new Table(tableDimension);
 
 onMouseClick = function (canvas, event) {
     event.preventDefault();
@@ -43,32 +83,61 @@ onMouseClick = function (canvas, event) {
     col = Math.floor(col / cellWidth);
     row = Math.floor(row / cellHeight);
 
-    onFocus = [col, row];
+    table.onFocus = table.cells[row][col];
+    cell = table.getCell(row, col);
 
-    document.getElementById("input-x").value = col;
-    document.getElementById("input-y").value = row;
-    document.getElementById("input-value").value = getCell(col, row);
+    document.getElementById("input-x").value = table.onFocus.col;
+    document.getElementById("input-y").value = table.onFocus.row;
+    document.getElementById("input-value").value = cell.text;
     document.getElementById("input-value").focus();
 
-    updateTable();
+    table.update();
 }
 
 canvas.addEventListener("mousedown", function (event) {
     onMouseClick(canvas, event);
 });
 
-input.addEventListener("keyup", function (event) {
+input.addEventListener("keydown", function (event) {
     if (event.key == "Enter") {
         event.preventDefault();
         document.getElementById("set").click();
+
+        newRow = table.onFocus.row + 1;
+        cell = table.getCell(newRow, table.onFocus.col);
+        if (cell == "") {
+            table.onFocus = table.cells[0][table.onFocus.col];
+        }
+        else {
+            table.onFocus = cell;
+        }
+
+        document.getElementById("input-x").value = table.onFocus.col;
+        document.getElementById("input-y").value = table.onFocus.row;
+        document.getElementById("input-value").value = table.onFocus.text;
+        document.getElementById("input-value").focus();
+        table.update();
+    }
+    if (event.key == "Tab") {
+        event.preventDefault();
+        document.getElementById("set").click();
+
+        newCol = table.onFocus.col + 1;
+        cell = table.getCell(table.onFocus.row, newCol);
+        if (cell == "") {
+            table.onFocus = table.cells[table.onFocus.row][0];
+        }
+        else {
+            table.onFocus = cell;
+        }
+
+        document.getElementById("input-x").value = table.onFocus.col;
+        document.getElementById("input-y").value = table.onFocus.row;
+        document.getElementById("input-value").value = table.onFocus.text;
+        document.getElementById("input-value").focus();
+        table.update();
     }
 });
-
-getCell = function (col, row) {
-    if (row < table_data.length && table_data[row].length > col)
-        return table_data[row][col];
-    else return "";
-}
 
 getDocument = function () {
     socket.send('{"command": "get_document_json"}');
@@ -82,20 +151,15 @@ connect = function () {
         var obj = JSON.parse(message.data);
         var command = obj['command'];
         if (command == 'get_document_json') {
-            table_data = obj['data'];
-            updateTable();
+            table.fromArray(obj['data']);
+            table.update();
         } else if (command == 'set_cell') {
             var x = obj['x'];
             var y = obj['y'];
             var value = obj['value'];
-            for (var i = table_data.length; i <= y; i++) {
-                table_data.push([]);
-            }
-            for (var i = table_data[y].length; i <= x; i++) {
-                table_data[y].push('');
-            }
-            table_data[y][x] = value;
-            updateTable();
+            if (y < table.dimension && x < table.dimension)
+                table.cells[y][x].text = value;
+            table.update();
         }
     }
 
@@ -111,14 +175,9 @@ setCell = function () {
     var y = document.getElementById("input-y").value;
     var value = document.getElementById("input-value").value;
 
-    for (var i = table_data.length; i <= y; i++) {
-        table_data.push([]);
-    }
-    for (var i = table_data[y].length; i <= x; i++) {
-        table_data[y].push('');
-    }
-    table_data[y][x] = value;
-    updateTable();
+    if (y < table.dimension && x < table.dimension)
+        table.cells[y][x].text = value;
+    table.update();
 
     socket.send('{"command": "set_cell", "x": ' + x + ', "y": ' + y + ', "value": "' + value + '"}');
 }
