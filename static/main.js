@@ -15,6 +15,12 @@ class Cell {
     }
 }
 
+Cell.prototype.setText = function(text)
+{
+    this.evaluated = evaluate(text);
+    this.text = text;
+}
+
 class Table {
     constructor(dimension) {
         this.dimension = dimension;
@@ -111,13 +117,12 @@ onMouseClick = function (canvas, event) {
 
         table.onFocus = table.cells[row][col];
         cell = table.getCell(row, col);
-
-        document.getElementById("input-x").value = table.onFocus.col;
-        document.getElementById("input-y").value = table.onFocus.row;
-        document.getElementById("input-value").value = cell.text;
-        document.getElementById("input-value").focus();
     }
 
+    document.getElementById("input-x").value = table.onFocus.col;
+    document.getElementById("input-y").value = table.onFocus.row;
+    document.getElementById("input-value").value = cell.text;
+    document.getElementById("input-value").focus();
 
     table.update();
 }
@@ -132,6 +137,9 @@ input.addEventListener("keydown", function (event) {
         document.getElementById("set").click();
 
         newRow = table.onFocus.row + 1;
+        table.rowOnFocus = -1;
+        table.colOnFocus = -1;
+
         cell = table.getCell(newRow, table.onFocus.col);
         if (cell == "") {
             table.onFocus = table.cells[0][table.onFocus.col];
@@ -151,6 +159,9 @@ input.addEventListener("keydown", function (event) {
         document.getElementById("set").click();
 
         newCol = table.onFocus.col + 1;
+        table.rowOnFocus = -1;
+        table.colOnFocus = -1;
+
         cell = table.getCell(table.onFocus.row, newCol);
         if (cell == "") {
             table.onFocus = table.cells[table.onFocus.row][0];
@@ -221,18 +232,26 @@ drawHeaders = function(dimension)
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
+    //draw top row
     for(var i = 0; i < dimension; i++)
     {
-        ctx.fillStyle = "lightgray";
+        ctx.fillStyle = table.colOnFocus == i || table.onFocus.col == i ? "darkgrey" : "lightgrey";
 
         ctx.fillRect(cellWidth + i * cellWidth, 0, cellWidth, cellHeight);
         ctx.strokeRect(cellWidth + i * cellWidth, 0, cellWidth, cellHeight);
+
+        ctx.fillStyle = "black";
+        ctx.fillText(getColName(i), i * cellWidth + 1.5*cellWidth, cellHeight/2);
+    }
+    //draw left column
+    for(var i = 0; i < dimension; i++)
+    {
+        ctx.fillStyle = table.rowOnFocus == i  || table.onFocus.row == i? "darkgrey" : "lightgrey";
 
         ctx.fillRect(0, i*cellHeight + cellHeight, cellWidth, cellHeight);
         ctx.strokeRect(0, i*cellHeight + cellHeight, cellWidth, cellHeight);
 
         ctx.fillStyle = "black";
-        ctx.fillText(getColName(i), i * cellWidth + 1.5*cellWidth, cellHeight/2);
         ctx.fillText(i + 1, cellWidth / 2, i * cellHeight + 1.5 * cellHeight);
     }
 }
@@ -241,12 +260,6 @@ getColName = function(index)
 {
     //TODO support letters after z
     return String.fromCharCode(index + 65);
-}
-
-Cell.prototype.setText = function(text)
-{
-    this.evaluated = evaluate(text);
-    this.text = text;
 }
 
 evaluate = function(input)
