@@ -7,9 +7,9 @@ var cellWidth = 80;
 var tableDimension = 10;
 
 class Cell {
-    constructor(col, row) {
-        this.col = col;
+    constructor(row, col) {
         this.row = row;
+        this.col = col;
         this.text = "";
     }
 }
@@ -23,11 +23,13 @@ class Table {
         }
         for (var row = 0; row < dimension; row++) {
             for (var col = 0; col < dimension; col++) {
-                var cell = new Cell(col, row);
+                var cell = new Cell(row, col);
                 this.cells[row].push(cell);
             }
         }
         this.onFocus = this.cells[0][0];
+        this.rowOnFocus;
+        this.colOnFocus;
     }
 }
 
@@ -41,17 +43,26 @@ Table.prototype.update = function () {
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
+    drawHeaders(10)
 
     for (var row = 0; row < this.dimension; row++) {
         for (var col = 0; col < this.dimension; col++) {
+            if (col == this.colOnFocus){
+                ctx.fillStyle = "lightblue";
+                ctx.fillRect(col * cellWidth + cellWidth, row * cellHeight + cellHeight, cellWidth, cellHeight);
+            }
+            if (row == this.rowOnFocus){
+                ctx.fillStyle = "lightblue";
+                ctx.fillRect(col * cellWidth + cellWidth, row * cellHeight + cellHeight, cellWidth, cellHeight);
+            }
             if (col == this.onFocus.col && row == this.onFocus.row) {
                 ctx.fillStyle = "lightblue";
-                ctx.fillRect(col * cellWidth, row * cellHeight, cellWidth, cellHeight);
+                ctx.fillRect(col * cellWidth + cellWidth, row * cellHeight + cellHeight, cellWidth, cellHeight);
             }
-            ctx.strokeRect(col * cellWidth, row * cellHeight, cellWidth, cellHeight);
+            ctx.strokeRect(col * cellWidth+cellWidth, row * cellHeight+cellHeight, cellWidth, cellHeight);
             ctx.fillStyle = "black";
             cell = this.getCell(row, col);
-            ctx.fillText(cell.text, col * cellWidth + (cellWidth / 2), row * cellHeight + (cellHeight / 2));
+            ctx.fillText(cell.text, col * cellWidth + (cellWidth / 2) + cellWidth, row * cellHeight + (cellHeight / 2)+cellHeight);
         }
     }
 }
@@ -80,16 +91,32 @@ onMouseClick = function (canvas, event) {
     col = event.clientX - rect.left;
     row = event.clientY - rect.top;
 
-    col = Math.floor(col / cellWidth);
-    row = Math.floor(row / cellHeight);
+    col = Math.floor(col / cellWidth) - 1;
+    row = Math.floor(row / cellHeight) - 1;
 
-    table.onFocus = table.cells[row][col];
-    cell = table.getCell(row, col);
+    if(col < 0){
+        table.rowOnFocus = row;
+        table.colOnFocus = -1;
+        table.onFocus = table.cells[row][0];
+    }
+    else if(row < 0){
+        table.colOnFocus = col;
+        table.rowOnFocus = -1;
+        table.onFocus = table.cells[0][col];
+    }
+    else {
+        table.rowOnFocus = -1;
+        table.colOnFocus = -1;
 
-    document.getElementById("input-x").value = table.onFocus.col;
-    document.getElementById("input-y").value = table.onFocus.row;
-    document.getElementById("input-value").value = cell.text;
-    document.getElementById("input-value").focus();
+        table.onFocus = table.cells[row][col];
+        cell = table.getCell(row, col);
+
+        document.getElementById("input-x").value = table.onFocus.col;
+        document.getElementById("input-y").value = table.onFocus.row;
+        document.getElementById("input-value").value = cell.text;
+        document.getElementById("input-value").focus();
+    }
+
 
     table.update();
 }
@@ -181,3 +208,38 @@ setCell = function () {
 
     socket.send('{"command": "set_cell", "x": ' + x + ', "y": ' + y + ', "value": "' + value + '"}');
 }
+
+drawHeaders = function(dimension)
+{
+    ctx.canvas.width = window.innerWidth;
+    ctx.canvas.height = window.innerHeight;
+
+    //TODO make crispy
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    for(var i = 0; i < dimension; i++)
+    {
+        ctx.fillStyle = "lightgray";
+
+        ctx.fillRect(cellWidth + i * cellWidth, 0, cellWidth, cellHeight);
+        ctx.strokeRect(cellWidth + i * cellWidth, 0, cellWidth, cellHeight);
+
+        ctx.fillRect(0, i*cellHeight + cellHeight, cellWidth, cellHeight);
+        ctx.strokeRect(0, i*cellHeight + cellHeight, cellWidth, cellHeight);
+
+        ctx.fillStyle = "black";
+        ctx.fillText(getColName(i), i * cellWidth + 1.5*cellWidth, cellHeight/2);
+        ctx.fillText(i + 1, cellWidth / 2, i * cellHeight + 1.5 * cellHeight);
+    }
+}
+
+getColName = function(index)
+{
+    //TODO support letters after z
+    return String.fromCharCode(index + 65);
+}
+
+
