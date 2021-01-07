@@ -11,6 +11,7 @@ class Cell {
         this.row = row;
         this.col = col;
         this.text = "";
+        this.evaluated = "";
     }
 }
 
@@ -62,7 +63,7 @@ Table.prototype.update = function () {
             ctx.strokeRect(col * cellWidth+cellWidth, row * cellHeight+cellHeight, cellWidth, cellHeight);
             ctx.fillStyle = "black";
             cell = this.getCell(row, col);
-            ctx.fillText(cell.text, col * cellWidth + (cellWidth / 2) + cellWidth, row * cellHeight + (cellHeight / 2)+cellHeight);
+            ctx.fillText(cell.evaluated, col * cellWidth + (cellWidth / 2) + cellWidth, row * cellHeight + (cellHeight / 2)+cellHeight);
         }
     }
 }
@@ -78,7 +79,7 @@ Table.prototype.fromArray = function (data) {
         for (var col in data[row]) {
             //TODO
             if (row < this.dimension && col < this.dimension)
-                this.cells[row][col].text = data[row][col];
+                this.cells[row][col].setText(data[row][col]);
         }
     }
 }
@@ -185,7 +186,7 @@ connect = function () {
             var y = obj['y'];
             var value = obj['value'];
             if (y < table.dimension && x < table.dimension)
-                table.cells[y][x].text = value;
+                table.cells[y][x].setText(value);
             table.update();
         }
     }
@@ -203,7 +204,7 @@ setCell = function () {
     var value = document.getElementById("input-value").value;
 
     if (y < table.dimension && x < table.dimension)
-        table.cells[y][x].text = value;
+        table.cells[y][x].setText(value);
     table.update();
 
     socket.send('{"command": "set_cell", "x": ' + x + ', "y": ' + y + ', "value": "' + value + '"}');
@@ -242,4 +243,25 @@ getColName = function(index)
     return String.fromCharCode(index + 65);
 }
 
+Cell.prototype.setText = function(text)
+{
+    this.evaluated = evaluate(text);
+    this.text = text;
+}
 
+evaluate = function(input)
+{
+    if(input[0] == '=')
+    {
+        e = function (val) { return Function('return' + val)(); }
+        try
+        {
+            return e('(' + input.slice(1) + ')');
+        }
+        catch(err)
+        {
+            return "#ERROR";
+        }
+    }
+    else return input;
+}
