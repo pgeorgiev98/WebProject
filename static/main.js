@@ -191,7 +191,11 @@ button.addEventListener("click", function(event)
 
 div.addEventListener("wheel", function(event)
 {
-    //console.log(event.deltaX, event.deltaY);
+    firstRow += event.deltaY;
+    firstColumn += event.deltaX;
+    firstRow = Math.max(0, firstRow);
+    firstColumn = Math.max(0, firstColumn);
+    table.update();
 });
 
 getDocument = function () {
