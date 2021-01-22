@@ -1,5 +1,6 @@
 var canvas = document.getElementById("canvas");
 var input = document.getElementById("input-value");
+var button = document.getElementById("set");
 var ctx = canvas.getContext("2d");
 
 var cellHeight = 30;
@@ -54,6 +55,8 @@ Table.prototype.update = function () {
 
     for (var row = 0; row < this.dimension; row++) {
         for (var col = 0; col < this.dimension; col++) {
+            cell = this.getCell(row, col);
+            textToDisplay = cell.evaluated;
             if (col == this.colOnFocus){
                 ctx.fillStyle = "lightblue";
                 ctx.fillRect(col * cellWidth + cellWidth, row * cellHeight + cellHeight, cellWidth, cellHeight);
@@ -65,11 +68,11 @@ Table.prototype.update = function () {
             if (col == this.onFocus.col && row == this.onFocus.row) {
                 ctx.fillStyle = "lightblue";
                 ctx.fillRect(col * cellWidth + cellWidth, row * cellHeight + cellHeight, cellWidth, cellHeight);
+                textToDisplay = cell.text;
             }
             ctx.strokeRect(col * cellWidth+cellWidth, row * cellHeight+cellHeight, cellWidth, cellHeight);
             ctx.fillStyle = "black";
-            cell = this.getCell(row, col);
-            ctx.fillText(cell.evaluated, col * cellWidth + (cellWidth / 2) + cellWidth, row * cellHeight + (cellHeight / 2)+cellHeight);
+            ctx.fillText(textToDisplay, col * cellWidth + (cellWidth / 2) + cellWidth, row * cellHeight + (cellHeight / 2)+cellHeight);
         }
     }
 }
@@ -176,6 +179,16 @@ input.addEventListener("keydown", function (event) {
         document.getElementById("input-value").focus();
         table.update();
     }
+});
+
+input.addEventListener("input", function(event)
+{
+   setCell(); 
+});
+
+button.addEventListener("click", function(event)
+{
+    setCell();
 });
 
 getDocument = function () {
