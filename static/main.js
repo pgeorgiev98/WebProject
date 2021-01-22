@@ -6,7 +6,6 @@ var ctx = canvas.getContext("2d");
 
 var cellHeight = 30;
 var cellWidth = 80;
-var tableDimension = 10;
 
 var firstRow = 0;
 var firstColumn = 0;
@@ -29,8 +28,7 @@ Cell.prototype.setText = function(text)
 class Table {
     _cells
 
-    constructor(dimension) {
-        this.dimension = dimension;
+    constructor() {
         this._cells = [];
         this.onFocus = this.getCell(0,0);
         this.rowOnFocus;
@@ -39,8 +37,12 @@ class Table {
 }
 
 Table.prototype.update = function () {
-    ctx.canvas.width = 1080;
-    ctx.canvas.height = 500;
+    ctx.canvas.width = parent.innerWidth;
+    ctx.canvas.height = parent.innerHeight;
+
+    tableWidth = Math.round(ctx.canvas.width / cellWidth);
+    tableHeight = Math.round(ctx.canvas.height / cellHeight);
+    console.log(tableHeight, tableWidth)
 
     //TODO make crispy
     ctx.strokeStyle = "black";
@@ -48,10 +50,10 @@ Table.prototype.update = function () {
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    drawHeaders(tableDimension);
+    drawHeaders(tableWidth, tableHeight);
 
-    for (var row = 0; row < this.dimension; row++) {
-        for (var col = 0; col < this.dimension; col++) {
+    for (var row = 0; row < tableHeight; row++) {
+        for (var col = 0; col < tableWidth; col++) {
             cell = this.getCell(row+firstRow, col+firstColumn);
             //cell = this.getCell(row, col);
             textToDisplay = cell.evaluated;
@@ -100,7 +102,7 @@ Table.prototype.fromArray = function (data) {
     }
 }
 
-var table = new Table(tableDimension);
+var table = new Table();
 
 onMouseClick = function (canvas, event) {
     event.preventDefault();
@@ -239,7 +241,7 @@ setCell = function () {
     socket.send('{"command": "set_cell", "x": ' + x + ', "y": ' + y + ', "value": "' + value + '"}');
 }
 
-drawHeaders = function(dimension)
+drawHeaders = function(tableWidth, tableHeight)
 {
     //TODO make crispy
     ctx.strokeStyle = "black";
@@ -248,7 +250,7 @@ drawHeaders = function(dimension)
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     //draw top row
-    for(var i = 0; i < dimension; i++)
+    for(var i = 0; i < tableWidth; i++)
     {
         ctx.fillStyle = (table.colOnFocus == i + firstColumn || table.onFocus.col == i + firstColumn) ? "darkgrey" : "lightgrey";
 
@@ -259,7 +261,7 @@ drawHeaders = function(dimension)
         ctx.fillText(getColName(i+firstColumn), i * cellWidth + 1.5*cellWidth, cellHeight/2);
     }
     //draw left column
-    for(var i = 0; i < dimension; i++)
+    for(var i = 0; i < tableHeight; i++)
     {
         ctx.fillStyle = (table.rowOnFocus == i + firstRow || table.onFocus.row == i + firstRow) ? "darkgrey" : "lightgrey";
 
