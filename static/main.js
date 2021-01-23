@@ -204,23 +204,24 @@ openDocument = function(id) {
 }
 
 createNewDocument = function() {
-	const params = new URLSearchParams(window.location.search)
-	if (params.has('id')) {
-		socket.close();
-		table.clear();
-	}
-
-	fetch("/api/create.php?name=TODO")
-		.then(response => response.json())
-		.then(json => {
-			const id = json["id"]; // TODO: error check
-			openDocument(id);
-		})
-		.catch((error) => {
-			console.log("Error: " + error); // TODO
-		});
+    fetch("/api/create.php?name=TODO")
+        .then(response => response.json())
+        .then(json => {
+            const id = json["id"]; // TODO: error check
+            openDocument(id);
+        })
+        .catch((error) => {
+            console.log("Error: " + error); // TODO
+        });
 }
-document.getElementById("create-new-table-button").addEventListener("click", createNewDocument);
+document.getElementById("create-new-table-button").addEventListener("click", function() {
+    const params = new URLSearchParams(window.location.search)
+    if (params.has('id')) {
+        window.open(window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + window.location.pathname + '?createnew=true', '_blank');
+    } else {
+        createNewDocument();
+    }
+});
 
 connect = function (id) {
     const hostname = window.location.hostname;
@@ -328,5 +329,8 @@ document.addEventListener('DOMContentLoaded', function () {
 	const params = new URLSearchParams(window.location.search)
 	if (params.has('id')) {
 		openDocument(params.get('id'));
-	}
+	} else if (params.has('createnew') && params.get('createnew')) {
+        history.replaceState(null, null, '?');
+        createNewDocument();
+    }
 });
