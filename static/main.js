@@ -204,7 +204,27 @@ getDocument = function () {
     socket.send('{"command": "get_document_json"}');
 }
 
-connect = function () {
+openDocument = function(id) {
+	var params = new URLSearchParams(window.location.search)
+	params.set('id', id);
+	// Add the id to the url in the address bar
+	history.replaceState(null, null, "?"+params.toString());
+	connect(id);
+}
+
+createNewDocument = function() {
+	fetch("/api/create.php?name=TODO")
+		.then(response => response.json())
+		.then(json => {
+			const id = json["id"]; // TODO: error check
+			openDocument(id);
+		})
+		.catch((error) => {
+			console.log("Error: " + error); // TODO
+		});
+}
+
+connect = function (id) {
     socket = new WebSocket('ws://localhost:8080');
 
     socket.onmessage = function (message) {
@@ -225,7 +245,7 @@ connect = function () {
 
     socket.onopen = function () {
         // TODO: The ID here is hardcoded
-        socket.send('{"command": "open", "id": "00aaff"}');
+        socket.send('{"command": "open", "id": "' + id + '"}');
         getDocument();
     }
 }
@@ -301,3 +321,12 @@ evaluate = function(input)
     }
     else return input;
 }
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+	const params = new URLSearchParams(window.location.search)
+	if (params.has('id')) {
+		openDocument(params.get('id'));
+	}
+});

@@ -4,13 +4,13 @@ namespace WebProject;
 
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
-use WebProject\DocumentManager;
 
 class Socket implements MessageComponentInterface {
 
-	public function __construct() {
+	public function __construct($document_manager, $dbconn) {
 		$this->clients = new \SplObjectStorage;
-		$this->document_manager = new DocumentManager();
+		$this->document_manager = $document_manager;
+		$this->dbconn = $dbconn;
 	}
 
 	public function onOpen(ConnectionInterface $conn) {
@@ -74,5 +74,15 @@ class Socket implements MessageComponentInterface {
 
 	public function onError(ConnectionInterface $conn, \Exception $e) {
 	}
+
+	public function cleanUp() {
+		foreach ($this->document_manager->documents as $document) {
+			echo "Saving document " . $document->id . "\n";
+			if (!$this->dbconn->query("UPDATE documents SET table_data='" . json_encode($document->rows) . "'")) {
+				echo "Failed: " . $this->dbconn->error . "\n";
+			}
+		}
+	}
 }
 
+?>
