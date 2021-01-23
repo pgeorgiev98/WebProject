@@ -5,8 +5,6 @@ namespace WebProject;
 use WebProject\Document;
 
 class DocumentManager {
-	public array $documents;
-
 	public function __construct() {
 		$this->documents = [];
 	}
@@ -30,6 +28,10 @@ class DocumentManager {
 			$document->rows = $rows;
 			$this->documents[$id] = $document;
 		}
+	}
+
+	public function getDocuments() {
+		return $this->documents;
 	}
 }
 
