@@ -42,7 +42,6 @@ Table.prototype.update = function () {
 
     tableWidth = Math.round(ctx.canvas.width / cellWidth);
     tableHeight = Math.round(ctx.canvas.height / cellHeight);
-    console.log(tableHeight, tableWidth)
 
     //TODO make crispy
     ctx.strokeStyle = "black";
