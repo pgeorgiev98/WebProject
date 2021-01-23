@@ -274,8 +274,14 @@ drawHeaders = function(tableWidth, tableHeight)
 
 getColName = function(index)
 {
-    //TODO support letters after z
-    return String.fromCharCode(index + 65);
+    index += 1;
+    var s = "";
+    do {
+        index -= 1;
+        s = String.fromCharCode((index % 26) + 65) + s;
+        index = Math.floor(index / 26);
+    } while (index > 0);
+    return s;
 }
 
 evaluate = function(input)
