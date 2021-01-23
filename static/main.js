@@ -40,13 +40,8 @@ Table.prototype.clear = function () {
 }
 
 Table.prototype.update = function () {
-    ctx.canvas.width = parent.innerWidth;
-    ctx.canvas.height = parent.innerHeight;
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    tableWidth = Math.round(ctx.canvas.width / cellWidth);
-    tableHeight = Math.round(ctx.canvas.height / cellHeight);
-
-    //TODO make crispy
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
 
@@ -57,7 +52,6 @@ Table.prototype.update = function () {
     for (var row = 0; row < tableHeight; row++) {
         for (var col = 0; col < tableWidth; col++) {
             cell = this.getCell(row+firstRow, col+firstColumn);
-            //cell = this.getCell(row, col);
             textToDisplay = cell.evaluated;
             if (col + firstColumn == this.colOnFocus){
                 ctx.fillStyle = "lightblue";
@@ -77,6 +71,8 @@ Table.prototype.update = function () {
             ctx.fillText(textToDisplay, col * cellWidth + (cellWidth / 2) + cellWidth, row * cellHeight + (cellHeight / 2)+cellHeight);
         }
     }
+
+    drawScrollbars();
 }
 
 Table.prototype.getCell = function (row, col) {
@@ -106,42 +102,224 @@ Table.prototype.fromArray = function (data) {
 
 var table = new Table();
 
-onMouseClick = function (canvas, event) {
-    event.preventDefault();
-    rect = canvas.getBoundingClientRect();
-    col = event.clientX - rect.left;
-    row = event.clientY - rect.top;
-
-    col = Math.floor(col / cellWidth) - 1 + firstColumn;
-    row = Math.floor(row / cellHeight) - 1 + firstRow;
-
-    if(col < firstColumn){
-        table.rowOnFocus = row;
-        table.colOnFocus = -1;
-        table.onFocus = table.getCell(row,0);
-    }
-    else if(row < firstRow){
-        table.colOnFocus = col;
-        table.rowOnFocus = -1;
-        table.onFocus = table.getCell(0,col);
-    }
-    else {
-        table.rowOnFocus = -1;
-        table.colOnFocus = -1;
-
-        table.onFocus = table.getCell(row,col);
-        cell = table.getCell(row, col);
+class Scrollbar {
+    constructor(orientation) {
+        this.orientation = orientation;
+        this.max = 50;
+        this.thickness = 15;
+        this.active = false;
+        this.dragStartPos = 0;
     }
 
-    document.getElementById("input-value").value = cell.text;
-    document.getElementById("input-value").focus();
+    getPositionLength() {
+        const canvasWidth  = ctx.canvas.width;
+        const canvasHeight = ctx.canvas.height;
+        const minLength    = 30;
+
+        const verticalCells  = Math.ceil(ctx.canvas.height / cellHeight);
+        const horizonalCells = Math.ceil(ctx.canvas.width / cellWidth);
+
+        var position = 0;
+        var length = 0;
+        var max = 0;
+
+        if (this.orientation == 'horizontal') {
+            max = this.max + horizonalCells;
+            const maxLength = ctx.canvas.width / 2;
+            length   = Math.max(minLength, maxLength * 50 / max);
+            position = Math.min(1, firstColumn / max) * (canvasWidth - this.thickness - length);
+        } else {
+            max = this.max + verticalCells;
+            const maxLength = ctx.canvas.height / 2;
+            length   = Math.max(minLength, maxLength * 50 / max);
+            position = Math.min(1, firstRow / max) * (canvasHeight - this.thickness - length);
+        }
+
+        return [position, length, max];
+    }
+
+    getNewPosition(coord) {
+        const canvasWidth  = ctx.canvas.width;
+        const canvasHeight = ctx.canvas.height;
+        var plm = this.getPositionLength();
+        var length = plm[1];
+        var max = plm[2];
+        var ret = 0;
+        if (this.orientation == 'horizontal') {
+            ret = max * coord / (canvasWidth - this.thickness - length);
+        } else {
+            ret = max * coord / (canvasHeight - this.thickness - length);
+        }
+        return Math.max(0, Math.round(ret));
+    }
+
+    draw() {
+        const canvasWidth  = ctx.canvas.width;
+        const canvasHeight = ctx.canvas.height;
+
+        const backColor     = '#eeeeee';
+        const inactiveColor = '#bbbbbb';
+        const activeColor   = '#555555';
+
+        const color = this.active ? activeColor : inactiveColor;
+
+        var pl = this.getPositionLength();
+        var position = pl[0];
+        var length = pl[1];
+
+        if (this.orientation == 'horizontal') {
+            ctx.fillStyle = backColor;
+            ctx.fillRect(0, canvasHeight - this.thickness, canvasWidth - this.thickness, this.thickness);
+
+            ctx.fillStyle = color;
+            ctx.fillRect(position, canvasHeight - this.thickness, length, this.thickness);
+        } else {
+            ctx.fillStyle = backColor;
+            ctx.fillRect(canvasWidth - this.thickness, 0, this.thickness, canvasHeight - this.thickness);
+
+            ctx.fillStyle = color;
+            ctx.fillRect(canvasWidth - this.thickness, position, this.thickness, length);
+        }
+    }
+
+    mouseDown(x, y) {
+        var pl = this.getPositionLength();
+        var position = pl[0];
+        var length = pl[1];
+
+        if (this.orientation == 'horizontal') {
+            if (y < ctx.canvas.height - this.thickness)
+                return false;
+            if (x >= position && x <= position + length) {
+                this.dragStartPos = x - position;
+                this.active = true;
+            }
+        } else {
+            if (x < ctx.canvas.width - this.thickness)
+                return false;
+            if (y >= position && y <= position + length) {
+                this.dragStartPos = y - position;
+                this.active = true;
+            }
+        }
+        return true;
+    }
+
+    mouseUp(x, y) {
+        var pl = this.getPositionLength();
+        var position = pl[0];
+        var length = pl[1];
+
+        if (this.active) {
+            if (this.orientation == 'horizontal') {
+                firstColumn = this.getNewPosition(x - this.dragStartPos);
+            } else {
+                firstRow = this.getNewPosition(y - this.dragStartPos);
+            }
+            this.active = false;
+        }
+        this.autoSize();
+    }
+
+    mouseMove(x, y) {
+        var pl = this.getPositionLength();
+        var position = pl[0];
+        var length = pl[1];
+
+        if (this.active) {
+            if (this.orientation == 'horizontal') {
+                firstColumn = this.getNewPosition(x - this.dragStartPos);
+            } else {
+                firstRow = this.getNewPosition(y - this.dragStartPos);
+            }
+        }
+    }
+
+    autoSize() {
+        if (this.orientation == 'horizontal')
+            this.max = Math.max(this.max, firstColumn);
+        else
+            this.max = Math.max(this.max, firstRow);
+    }
+}
+
+var hScroll = new Scrollbar('horizontal');
+var vScroll = new Scrollbar('vertical');
+
+onMouseDown = function (canvas, event) {
+    var rect = canvas.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
+
+    if (hScroll.mouseDown(x, y)) {
+    } else if (vScroll.mouseDown(x, y)) {
+    } else {
+        event.preventDefault();
+        col = x;
+        row = y;
+
+        col = Math.floor(col / cellWidth) - 1 + firstColumn;
+        row = Math.floor(row / cellHeight) - 1 + firstRow;
+
+        if(col < firstColumn){
+            table.rowOnFocus = row;
+            table.colOnFocus = -1;
+            table.onFocus = table.getCell(row,0);
+        }
+        else if(row < firstRow){
+            table.colOnFocus = col;
+            table.rowOnFocus = -1;
+            table.onFocus = table.getCell(0,col);
+        }
+        else {
+            table.rowOnFocus = -1;
+            table.colOnFocus = -1;
+
+            table.onFocus = table.getCell(row,col);
+            cell = table.getCell(row, col);
+        }
+
+        document.getElementById("input-value").value = cell.text;
+        document.getElementById("input-value").focus();
+    }
 
     table.update();
 }
 
-canvas.addEventListener("mousedown", function (event) {
-    onMouseClick(canvas, event);
-});
+onMouseUp = function(event) {
+    var rect = canvas.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
+
+    hScroll.mouseUp(x, y);
+    vScroll.mouseUp(x, y);
+    table.update();
+}
+
+onMouseMove = function(event) {
+    var rect = canvas.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
+
+    oldFirstColumn = firstColumn;
+    oldFirstRow = firstRow;
+    hScroll.mouseMove(x, y);
+    vScroll.mouseMove(x, y);
+    if (oldFirstColumn != firstColumn || oldFirstRow != firstRow)
+        table.update();
+}
+
+canvas.onmousedown = function (event) {
+    onMouseDown(canvas, event);
+}
+
+window.onmouseup = function (event) {
+    onMouseUp(event);
+}
+
+window.onmousemove = function (event) {
+    onMouseMove(event);
+}
 
 input.addEventListener("keydown", function (event) {
     if (event.key == "Enter") {
@@ -188,6 +366,9 @@ div.addEventListener("wheel", function(event)
     firstColumn += event.deltaX;
     firstRow = Math.max(0, firstRow);
     firstColumn = Math.max(0, firstColumn);
+
+    hScroll.autoSize();
+    vScroll.autoSize();
     table.update();
 });
 
@@ -294,6 +475,11 @@ drawHeaders = function(tableWidth, tableHeight)
     }
 }
 
+drawScrollbars = function() {
+	hScroll.draw();
+	vScroll.draw();
+}
+
 getColName = function(index)
 {
     index += 1;
@@ -324,6 +510,15 @@ evaluate = function(input)
 }
 
 
+onWindowResize = function() {
+	div.style.height = (window.innerHeight - div.offsetTop - 16) + "px";
+    ctx.canvas.width = div.offsetWidth;
+    ctx.canvas.height = div.offsetHeight;
+    tableWidth = Math.round(ctx.canvas.width / cellWidth);
+    tableHeight = Math.round(ctx.canvas.height / cellHeight);
+    table.update();
+}
+
 
 document.addEventListener('DOMContentLoaded', function () {
 	const params = new URLSearchParams(window.location.search)
@@ -333,4 +528,9 @@ document.addEventListener('DOMContentLoaded', function () {
         history.replaceState(null, null, '?');
         createNewDocument();
     }
+    onWindowResize();
 });
+
+document.body.onresize = function() {
+	onWindowResize();
+};

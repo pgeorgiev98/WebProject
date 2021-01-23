@@ -1,5 +1,6 @@
 body {
-    position: fixed;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 input, button {
     padding: 10px;
