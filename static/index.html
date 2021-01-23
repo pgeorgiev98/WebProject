@@ -8,9 +8,7 @@
     </head>
     <body>
 		<div class="buttons">
-			<button onclick="connect()">Connect</button>
-			<button onclick="getDocument()">Get Document</button>
-			<button onclick="createNewDocument()">Create new table</button>
+			<button id="create-new-table-button">Create new table</button>
 		</div>
 		<div class="buttons">
 			<button id="style-button">
@@ -28,8 +26,6 @@
 		</div>
 		<label for="input-value">Value: </label>
 		<input type="text" id="input-value" name="input-value"/>
-
-        <button id="set">Set</button>
 
 		<div id="table-container">
 			<canvas id="canvas"></canvas>

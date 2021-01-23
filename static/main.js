@@ -1,7 +1,6 @@
 var div = document.getElementById("table-container");
 var canvas = document.getElementById("canvas");
 var input = document.getElementById("input-value");
-var button = document.getElementById("set");
 var ctx = canvas.getContext("2d");
 
 var cellHeight = 30;
@@ -29,11 +28,15 @@ class Table {
     _cells
 
     constructor() {
-        this._cells = [];
-        this.onFocus = this.getCell(0,0);
-        this.rowOnFocus;
-        this.colOnFocus;
+        this.clear();
     }
+}
+
+Table.prototype.clear = function () {
+    this._cells = [];
+    this.onFocus = this.getCell(0,0);
+    this.rowOnFocus = -1;
+    this.colOnFocus = -1;
 }
 
 Table.prototype.update = function () {
@@ -143,7 +146,7 @@ canvas.addEventListener("mousedown", function (event) {
 input.addEventListener("keydown", function (event) {
     if (event.key == "Enter") {
         event.preventDefault();
-        document.getElementById("set").click();
+        setCell();
 
         newRow = table.onFocus.row + 1;
         table.rowOnFocus = -1;
@@ -158,7 +161,7 @@ input.addEventListener("keydown", function (event) {
     }
     if (event.key == "Tab") {
         event.preventDefault();
-        document.getElementById("set").click();
+        setCell();
 
         newCol = table.onFocus.col + 1;
         table.rowOnFocus = -1;
@@ -177,11 +180,6 @@ input.addEventListener("keydown", function (event) {
 input.addEventListener("input", function(event)
 {
    setCell(); 
-});
-
-button.addEventListener("click", function(event)
-{
-    setCell();
 });
 
 div.addEventListener("wheel", function(event)
@@ -206,6 +204,12 @@ openDocument = function(id) {
 }
 
 createNewDocument = function() {
+	const params = new URLSearchParams(window.location.search)
+	if (params.has('id')) {
+		socket.close();
+		table.clear();
+	}
+
 	fetch("/api/create.php?name=TODO")
 		.then(response => response.json())
 		.then(json => {
@@ -216,6 +220,7 @@ createNewDocument = function() {
 			console.log("Error: " + error); // TODO
 		});
 }
+document.getElementById("create-new-table-button").addEventListener("click", createNewDocument);
 
 connect = function (id) {
     const hostname = window.location.hostname;
