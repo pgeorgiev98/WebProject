@@ -130,8 +130,6 @@ onMouseClick = function (canvas, event) {
         cell = table.getCell(row, col);
     }
 
-    document.getElementById("input-x").value = table.onFocus.col;
-    document.getElementById("input-y").value = table.onFocus.row;
     document.getElementById("input-value").value = cell.text;
     document.getElementById("input-value").focus();
 
@@ -154,8 +152,6 @@ input.addEventListener("keydown", function (event) {
         cell = table.getCell(newRow, table.onFocus.col);
         table.onFocus = cell;
 
-        document.getElementById("input-x").value = table.onFocus.col;
-        document.getElementById("input-y").value = table.onFocus.row;
         document.getElementById("input-value").value = table.onFocus.text;
         document.getElementById("input-value").focus();
         table.update();
@@ -172,8 +168,6 @@ input.addEventListener("keydown", function (event) {
         table.onFocus = table.getCell(table.onFocus.row, 0);
         table.onFocus = cell;
 
-        document.getElementById("input-x").value = table.onFocus.col;
-        document.getElementById("input-y").value = table.onFocus.row;
         document.getElementById("input-value").value = table.onFocus.text;
         document.getElementById("input-value").focus();
         table.update();
@@ -230,8 +224,9 @@ connect = function () {
 }
 
 setCell = function () {
-    var x = document.getElementById("input-x").value;
-    var y = document.getElementById("input-y").value;
+    var x = table.onFocus.col;
+    var y = table.onFocus.row;
+
     var value = document.getElementById("input-value").value;
 
     table.getCell(y, x).setText(value);
