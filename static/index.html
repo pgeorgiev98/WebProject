@@ -3,26 +3,29 @@
     <head>
 		<title>Web Project</title>
 		<meta charset="UTF-8">
-        <style>
-			body {
-				position: fixed;
-			}
-            input, button {
-				padding: 10px;
-			}
-		</style>
+		<link rel="stylesheet" href="stylesheet.css">
+		<link href="icons/css/all.css" rel="stylesheet">
     </head>
     <body>
-        <button onclick="connect()">Connect</button>
-        <button onclick="getDocument()">Get Document</button>
-		<button onclick="createNewDocument()">Create new table</button>
-
-		<br>
-
-		<label for="input-x">X: </label>
-		<input type="number" id="input-x" name="input-x" />
-		<label for="input-y">Y: </label>
-		<input type="number" id="input-y" name="input-y" />
+		<div class="buttons">
+			<button onclick="connect()">Connect</button>
+			<button onclick="getDocument()">Get Document</button>
+			<button onclick="createNewDocument()">Create new table</button>
+		</div>
+		<div class="buttons">
+			<button id="style-button">
+				<i class="fas fa-bold"></i>
+			</button>
+			<button id="style-button">
+				<i class="fas fa-italic"></i>
+			</button>
+			<button id="style-button">
+				<i class="fas fa-underline"></i>
+			</button>
+			<button id="style-button">
+				<i class="fas fa-strikethrough"></i>
+			</button>
+		</div>
 		<label for="input-value">Value: </label>
 		<input type="text" id="input-value" name="input-value"/>
 
