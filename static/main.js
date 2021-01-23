@@ -218,7 +218,8 @@ createNewDocument = function() {
 }
 
 connect = function (id) {
-    socket = new WebSocket('ws://localhost:8080');
+    const hostname = window.location.hostname;
+    socket = new WebSocket('ws://' + hostname + ':8080');
 
     socket.onmessage = function (message) {
         //alert( message.data );
