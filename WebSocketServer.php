@@ -18,8 +18,7 @@ if ($dbconn->connect_error) {
 	exit("Failed to connect to database");
 }
 
-$document_manager = new DocumentManager();
-$document_manager->loadDocumentsFromDB($dbconn);
+$document_manager = new DocumentManager($dbconn);
 
 $socket = new Socket($document_manager, $dbconn);
 $server = IoServer::factory(

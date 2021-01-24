@@ -32,38 +32,44 @@ class Socket implements MessageComponentInterface {
 		} else if ($command == "get_document_json") {
 			$id = $from->document_id;
 			$doc = $this->document_manager->getDocument($id);
-			$response = array(
-				"command" => $command,
-				"data" => $doc->rows
-			);
-			$from->send(json_encode($response));
+			if (isset($doc)) {
+				$response = array(
+					"command" => $command,
+					"data" => $doc->rows
+				);
+				$from->send(json_encode($response));
+			}
 
 		} else if ($command == "get_cell") {
 			$id = $from->document_id;
 			$doc = $this->document_manager->getDocument($id);
-			$x = $json["x"];
-			$y = $json["y"];
-			$response = json_encode(array(
-				"command" => $command,
-				"x" => $x,
-				"y" => $y,
-				"value" => $doc->getCell($x, $y)
-			));
-			$from->send($value);
+			if (isset($doc)) {
+				$x = $json["x"];
+				$y = $json["y"];
+				$response = json_encode(array(
+					"command" => $command,
+					"x" => $x,
+					"y" => $y,
+					"value" => $doc->getCell($x, $y)
+				));
+				$from->send($value);
+			}
 
 		} else if ($command == "set_cell") {
 			$id = $from->document_id;
 			$doc = $this->document_manager->getDocument($id);
-			$x = $json["x"];
-			$y = $json["y"];
-			$value = $json["value"];
+			if (isset($doc)) {
+				$x = $json["x"];
+				$y = $json["y"];
+				$value = $json["value"];
 
-			$doc->setCell($x, $y, $value);
-			foreach ($this->clients as $client) {
-				if ($from->resourceId == $client->resourceId) {
-					continue;
+				$doc->setCell($x, $y, $value);
+				foreach ($this->clients as $client) {
+					if ($from->resourceId == $client->resourceId) {
+						continue;
+					}
+					$client->send($msg);
 				}
-				$client->send($msg);
 			}
 
 		}
@@ -77,9 +83,13 @@ class Socket implements MessageComponentInterface {
 
 	public function cleanUp() {
 		foreach ($this->document_manager->getDocuments() as $document) {
-			echo "Saving document " . $document->id . "\n";
-			if (!$this->dbconn->query("UPDATE documents SET table_data='" . json_encode($document->rows) . "'")) {
-				echo "Failed: " . $this->dbconn->error . "\n";
+			if ($document->isDirty()) {
+				echo "Saving document " . $document->id . "\n";
+				if (!$this->dbconn->query("UPDATE documents SET table_data='" . json_encode($document->rows) . "'")) {
+					echo "Failed: " . $this->dbconn->error . "\n";
+				} else {
+					$document->onSaved();
+				}
 			}
 		}
 	}

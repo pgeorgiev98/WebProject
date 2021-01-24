@@ -8,6 +8,7 @@ class Document {
 		$this->id = $id;
 		$this->name = $name;
 		$this->rows = [];
+		$this->dirty = false;
 	}
 
 	public function getCell(int $x, int $y) {
@@ -23,6 +24,15 @@ class Document {
 			$this->rows[$y][$i] = [];
 		}
 		$this->rows[$y][$x] = $value;
+		$this->dirty = true;
+	}
+
+	public function onSaved() {
+		$this->dirty = false;
+	}
+
+	public function isDirty() {
+		return $this->dirty;
 	}
 }
 
