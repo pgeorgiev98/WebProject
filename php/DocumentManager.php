@@ -45,6 +45,11 @@ class DocumentManager {
 	public function getDocuments() {
 		return $this->documents;
 	}
+
+	public function freeDocument(string $id) {
+		echo 'Free ' . $id . "\n";
+		unset($this->documents[$id]);
+	}
 }
 
 ?>

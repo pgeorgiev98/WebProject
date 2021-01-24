@@ -82,15 +82,26 @@ class Socket implements MessageComponentInterface {
 	}
 
 	public function cleanUp() {
+		$toFree = array();
+
 		foreach ($this->document_manager->getDocuments() as $document) {
-			if ($document->isDirty()) {
+			$freeDocument = ($document->getSecondsSinceAccessed() > 120); // TODO: hardcoded constant
+			if ($document->isDirty() || $freeDocument) {
 				echo "Saving document " . $document->id . "\n";
 				if (!$this->dbconn->query("UPDATE documents SET table_data='" . json_encode($document->rows) . "'")) {
 					echo "Failed: " . $this->dbconn->error . "\n";
 				} else {
 					$document->onSaved();
 				}
+
+				if ($freeDocument) {
+					array_push($toFree, $document->id);
+				}
 			}
+		}
+
+		foreach ($toFree as $id) {
+			$this->document_manager->freeDocument($id);
 		}
 	}
 }

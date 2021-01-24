@@ -9,9 +9,11 @@ class Document {
 		$this->name = $name;
 		$this->rows = [];
 		$this->dirty = false;
+		$this->last_accessed = new \DateTime();
 	}
 
 	public function getCell(int $x, int $y) {
+		$this->onAccessed();
 		return $this->rows[y][x];
 	}
 
@@ -25,6 +27,7 @@ class Document {
 		}
 		$this->rows[$y][$x] = $value;
 		$this->dirty = true;
+		$this->onAccessed();
 	}
 
 	public function onSaved() {
@@ -33,6 +36,14 @@ class Document {
 
 	public function isDirty() {
 		return $this->dirty;
+	}
+
+	public function onAccessed() {
+		$this->last_accessed = new \DateTime();
+	}
+
+	public function getSecondsSinceAccessed() {
+		return (new \DateTime())->getTimestamp() - $this->last_accessed->getTimestamp();
 	}
 }
 
