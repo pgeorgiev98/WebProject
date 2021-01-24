@@ -1,28 +1,34 @@
 body {
     overflow-x: hidden;
     overflow-y: hidden;
+    background-color: white;
 }
 input, button {
     padding: 10px;
 }
-.buttons::after {
-    content: "\a";
+.document-buttons::after, .style-buttons::after, #input::after{
+    content: "\A";
     display: block;
     white-space: pre;
 }
-#style-button {
+.style-buttons button {
     box-shadow: insert, black;
-    background: linear-gradient(to bottom,  white  5%, rgb(72, 182, 226) 100%);
+    background: linear-gradient(to bottom, #F0EEE2  5%, #99ADB4 100%);
     background-color: white;
     border-radius: 5px;
     display: inline-block;
     cursor: pointer;
+    border: none;
 }
-#style-button:hover {
+.style-buttons button:hover {
     background: black;
-    background-color:rgb(72, 182, 226);
+    background-color: #99ADB4;
 }
-#style-button:active {
+.style-buttons button:focus {
+    background: black;
+    background-color: #99ADB4;
+}
+.style-buttons button:active {
     position: relative;
     top: 1px;
 }
