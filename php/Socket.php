@@ -77,9 +77,11 @@ class Socket implements MessageComponentInterface {
 
 	public function cleanUp() {
 		foreach ($this->document_manager->getDocuments() as $document) {
-			echo "Saving document " . $document->id . "\n";
-			if (!$this->dbconn->query("UPDATE documents SET table_data='" . json_encode($document->rows) . "'")) {
-				echo "Failed: " . $this->dbconn->error . "\n";
+			if ($document->isDirty()) {
+				echo "Saving document " . $document->id . "\n";
+				if (!$this->dbconn->query("UPDATE documents SET table_data='" . json_encode($document->rows) . "'")) {
+					echo "Failed: " . $this->dbconn->error . "\n";
+				}
 			}
 		}
 	}
