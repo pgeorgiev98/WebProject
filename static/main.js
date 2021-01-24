@@ -115,7 +115,10 @@ onWindowResize = function () {
     ctx.canvas.height = div.offsetHeight;
     tableWidth = Math.round(ctx.canvas.width / cellWidth);
     tableHeight = Math.round(ctx.canvas.height / cellHeight);
-    table.update();
+    const params = new URLSearchParams(window.location.search)
+    if (params.has('id')) {
+        table.update();
+    }
 }
 
 onDocumentLoaded = function () {
