@@ -16,12 +16,11 @@ class Cell {
         this.text = "";
         this.evaluated = "";
     }
-}
 
-Cell.prototype.setText = function(text)
-{
-    this.evaluated = evaluate(text);
-    this.text = text;
+    setText(text) {
+        this.evaluated = evaluate(text);
+        this.text = text;
+    }
 }
 
 class Table {
@@ -30,72 +29,74 @@ class Table {
     constructor() {
         this.clear();
     }
-}
 
-Table.prototype.clear = function () {
-    this._cells = [];
-    this.onFocus = this.getCell(0,0);
-    this.rowOnFocus = -1;
-    this.colOnFocus = -1;
-}
+    clear() {
+        this._cells = [];
+        this.onFocus = this.getCell(0, 0);
+        this.rowOnFocus = -1;
+        this.colOnFocus = -1;
+    }
 
-Table.prototype.update = function () {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    update() {
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 1;
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 1;
 
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    drawHeaders(tableWidth, tableHeight);
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        drawHeaders(tableWidth, tableHeight);
 
-    for (var row = 0; row < tableHeight; row++) {
-        for (var col = 0; col < tableWidth; col++) {
-            cell = this.getCell(row+firstRow, col+firstColumn);
-            textToDisplay = cell.evaluated;
-            if (col + firstColumn == this.colOnFocus){
-                ctx.fillStyle = "lightblue";
-                ctx.fillRect(col * cellWidth + cellWidth, row * cellHeight + cellHeight, cellWidth, cellHeight);
+        for (var row = 0; row < tableHeight; row++) {
+            for (var col = 0; col < tableWidth; col++) {
+                var cell = this.getCell(row + firstRow, col + firstColumn);
+                var textToDisplay = cell.evaluated;
+                var x = col * cellWidth + cellWidth;
+                var y = row * cellHeight + cellHeight;
+                if (col + firstColumn == this.colOnFocus) {
+                    ctx.fillStyle = "lightblue";
+                    ctx.fillRect(x, y, cellWidth, cellHeight);
+                }
+                if (row + firstRow == this.rowOnFocus) {
+                    ctx.fillStyle = "lightblue";
+                    ctx.fillRect(x, y, cellWidth, cellHeight);
+                }
+                if (col + firstColumn == this.onFocus.col && row + firstRow == this.onFocus.row) {
+                    ctx.fillStyle = "lightblue";
+                    ctx.fillRect(x, y, cellWidth, cellHeight);
+                    textToDisplay = cell.text;
+                }
+                ctx.strokeRect(x, y, cellWidth, cellHeight);
+                ctx.fillStyle = "black";
+                ctx.fillText(textToDisplay, x + (cellWidth / 2), y + (cellHeight / 2));
             }
-            if (row + firstRow == this.rowOnFocus){
-                ctx.fillStyle = "lightblue";
-                ctx.fillRect(col * cellWidth + cellWidth, row * cellHeight + cellHeight, cellWidth, cellHeight);
+        }
+
+        drawScrollbars();
+    }
+
+    getCell(row, col) {
+        if (row < this._cells.length && this._cells[row].length > col)
+            return this._cells[row][col];
+        else if (row >= this._cells.length || col >= this._cells[row].length) {
+            for (var i = this._cells.length; i <= row; i++) {
+                this._cells.push([]);
             }
-            if (col + firstColumn == this.onFocus.col && row + firstRow == this.onFocus.row) {
-                ctx.fillStyle = "lightblue";
-                ctx.fillRect(col * cellWidth + cellWidth, row * cellHeight + cellHeight, cellWidth, cellHeight);
-                textToDisplay = cell.text;
+            for (var i = this._cells[row].length; i <= col; i++) {
+                var cell = new Cell(row, i);
+                this._cells[row].push(cell);
             }
-            ctx.strokeRect(col * cellWidth+cellWidth, row * cellHeight+cellHeight, cellWidth, cellHeight);
-            ctx.fillStyle = "black";
-            ctx.fillText(textToDisplay, col * cellWidth + (cellWidth / 2) + cellWidth, row * cellHeight + (cellHeight / 2)+cellHeight);
+            return this._cells[row][col];
         }
     }
 
-    drawScrollbars();
-}
-
-Table.prototype.getCell = function (row, col) {
-    if (row < this._cells.length && this._cells[row].length > col)
-        return this._cells[row][col];
-    else if (row >= this._cells.length || col >= this._cells[row].length) {
-        for (var i = this._cells.length; i <= row; i++) {
-            this._cells.push([]);
-        }
-        for (var i = this._cells[row].length; i <= col; i++) {
-            var cell = new Cell(row, i);
-            this._cells[row].push(cell);
-        }
-        return this._cells[row][col];
-    }
-}
-
-Table.prototype.fromArray = function (data) {
-    for (var row in data) {
-        var r = parseInt(row);
-        for (var col in data[r]) {
-            var c = parseInt(col);
-            this.getCell(r, c).setText(data[r][c]);
+    fromArray(data) {
+        for (var row in data) {
+            var r = parseInt(row);
+            for (var col in data[r]) {
+                var c = parseInt(col);
+                this.getCell(r, c).setText(data[r][c]);
+            }
         }
     }
 }
@@ -112,11 +113,11 @@ class Scrollbar {
     }
 
     getPositionLength() {
-        const canvasWidth  = ctx.canvas.width;
+        const canvasWidth = ctx.canvas.width;
         const canvasHeight = ctx.canvas.height;
-        const minLength    = 30;
+        const minLength = 30;
 
-        const verticalCells  = Math.ceil(ctx.canvas.height / cellHeight);
+        const verticalCells = Math.ceil(ctx.canvas.height / cellHeight);
         const horizonalCells = Math.ceil(ctx.canvas.width / cellWidth);
 
         var position = 0;
@@ -126,12 +127,12 @@ class Scrollbar {
         if (this.orientation == 'horizontal') {
             max = this.max + horizonalCells;
             const maxLength = ctx.canvas.width / 2;
-            length   = Math.max(minLength, maxLength * 50 / max);
+            length = Math.max(minLength, maxLength * 50 / max);
             position = Math.min(1, firstColumn / max) * (canvasWidth - this.thickness - length);
         } else {
             max = this.max + verticalCells;
             const maxLength = ctx.canvas.height / 2;
-            length   = Math.max(minLength, maxLength * 50 / max);
+            length = Math.max(minLength, maxLength * 50 / max);
             position = Math.min(1, firstRow / max) * (canvasHeight - this.thickness - length);
         }
 
@@ -139,7 +140,7 @@ class Scrollbar {
     }
 
     getNewPosition(coord) {
-        const canvasWidth  = ctx.canvas.width;
+        const canvasWidth = ctx.canvas.width;
         const canvasHeight = ctx.canvas.height;
         var plm = this.getPositionLength();
         var length = plm[1];
@@ -154,12 +155,12 @@ class Scrollbar {
     }
 
     draw() {
-        const canvasWidth  = ctx.canvas.width;
+        const canvasWidth = ctx.canvas.width;
         const canvasHeight = ctx.canvas.height;
 
-        const backColor     = '#eeeeee';
+        const backColor = '#eeeeee';
         const inactiveColor = '#bbbbbb';
-        const activeColor   = '#555555';
+        const activeColor = '#555555';
 
         const color = this.active ? activeColor : inactiveColor;
 
@@ -261,21 +262,21 @@ onMouseDown = function (canvas, event) {
         col = Math.floor(col / cellWidth) - 1 + firstColumn;
         row = Math.floor(row / cellHeight) - 1 + firstRow;
 
-        if(col < firstColumn){
+        if (col < firstColumn) {
             table.rowOnFocus = row;
             table.colOnFocus = -1;
-            table.onFocus = table.getCell(row,0);
+            table.onFocus = table.getCell(row, 0);
         }
-        else if(row < firstRow){
+        else if (row < firstRow) {
             table.colOnFocus = col;
             table.rowOnFocus = -1;
-            table.onFocus = table.getCell(0,col);
+            table.onFocus = table.getCell(0, col);
         }
         else {
             table.rowOnFocus = -1;
             table.colOnFocus = -1;
 
-            table.onFocus = table.getCell(row,col);
+            table.onFocus = table.getCell(row, col);
             cell = table.getCell(row, col);
         }
 
@@ -286,7 +287,7 @@ onMouseDown = function (canvas, event) {
     table.update();
 }
 
-onMouseUp = function(event) {
+onMouseUp = function (event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
@@ -296,7 +297,7 @@ onMouseUp = function(event) {
     table.update();
 }
 
-onMouseMove = function(event) {
+onMouseMove = function (event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
@@ -355,13 +356,11 @@ input.addEventListener("keydown", function (event) {
     }
 });
 
-input.addEventListener("input", function(event)
-{
-   setCell(); 
+input.addEventListener("input", function (event) {
+    setCell();
 });
 
-div.addEventListener("wheel", function(event)
-{
+div.addEventListener("wheel", function (event) {
     firstRow += event.deltaY;
     firstColumn += event.deltaX;
     firstRow = Math.max(0, firstRow);
@@ -376,15 +375,15 @@ getDocument = function () {
     socket.send('{"command": "get_document_json"}');
 }
 
-openDocument = function(id) {
-	var params = new URLSearchParams(window.location.search)
-	params.set('id', id);
-	// Add the id to the url in the address bar
-	history.replaceState(null, null, "?"+params.toString());
-	connect(id);
+openDocument = function (id) {
+    var params = new URLSearchParams(window.location.search)
+    params.set('id', id);
+    // Add the id to the url in the address bar
+    history.replaceState(null, null, "?" + params.toString());
+    connect(id);
 }
 
-createNewDocument = function() {
+createNewDocument = function () {
     fetch("/api/create.php?name=TODO")
         .then(response => response.json())
         .then(json => {
@@ -395,7 +394,8 @@ createNewDocument = function() {
             console.log("Error: " + error); // TODO
         });
 }
-document.getElementById("create-new-table-button").addEventListener("click", function() {
+
+document.getElementById("create-new-table-button").addEventListener("click", function () {
     const params = new URLSearchParams(window.location.search)
     if (params.has('id')) {
         window.open(window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + window.location.pathname + '?createnew=true', '_blank');
@@ -419,7 +419,7 @@ connect = function (id) {
             var x = obj['x'];
             var y = obj['y'];
             var value = obj['value'];
-            table.getCell(y,x).setText(value);
+            table.getCell(y, x).setText(value);
             table.update();
         }
     }
@@ -443,8 +443,7 @@ setCell = function () {
     socket.send('{"command": "set_cell", "x": ' + x + ', "y": ' + y + ', "value": "' + value + '"}');
 }
 
-drawHeaders = function(tableWidth, tableHeight)
-{
+drawHeaders = function (tableWidth, tableHeight) {
     //TODO make crispy
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
@@ -452,36 +451,33 @@ drawHeaders = function(tableWidth, tableHeight)
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     //draw top row
-    for(var i = 0; i < tableWidth; i++)
-    {
+    for (var i = 0; i < tableWidth; i++) {
         ctx.fillStyle = (table.colOnFocus == i + firstColumn || table.onFocus.col == i + firstColumn) ? "darkgrey" : "lightgrey";
 
         ctx.fillRect(cellWidth + i * cellWidth, 0, cellWidth, cellHeight);
         ctx.strokeRect(cellWidth + i * cellWidth, 0, cellWidth, cellHeight);
 
         ctx.fillStyle = "black";
-        ctx.fillText(getColName(i+firstColumn), i * cellWidth + 1.5*cellWidth, cellHeight/2);
+        ctx.fillText(getColName(i + firstColumn), i * cellWidth + 1.5 * cellWidth, cellHeight / 2);
     }
     //draw left column
-    for(var i = 0; i < tableHeight; i++)
-    {
+    for (var i = 0; i < tableHeight; i++) {
         ctx.fillStyle = (table.rowOnFocus == i + firstRow || table.onFocus.row == i + firstRow) ? "darkgrey" : "lightgrey";
 
-        ctx.fillRect(0, i*cellHeight + cellHeight, cellWidth, cellHeight);
-        ctx.strokeRect(0, i*cellHeight + cellHeight, cellWidth, cellHeight);
+        ctx.fillRect(0, i * cellHeight + cellHeight, cellWidth, cellHeight);
+        ctx.strokeRect(0, i * cellHeight + cellHeight, cellWidth, cellHeight);
 
         ctx.fillStyle = "black";
         ctx.fillText(i + 1 + firstRow, cellWidth / 2, i * cellHeight + 1.5 * cellHeight);
     }
 }
 
-drawScrollbars = function() {
-	hScroll.draw();
-	vScroll.draw();
+drawScrollbars = function () {
+    hScroll.draw();
+    vScroll.draw();
 }
 
-getColName = function(index)
-{
+getColName = function (index) {
     index += 1;
     var s = "";
     do {
@@ -492,17 +488,13 @@ getColName = function(index)
     return s;
 }
 
-evaluate = function(input)
-{
-    if(input[0] == '=')
-    {
+evaluate = function (input) {
+    if (input[0] == '=') {
         e = function (val) { return Function('return' + val)(); }
-        try
-        {
+        try {
             return e('(' + input.slice(1) + ')');
         }
-        catch(err)
-        {
+        catch (err) {
             return "#ERROR";
         }
     }
@@ -510,8 +502,8 @@ evaluate = function(input)
 }
 
 
-onWindowResize = function() {
-	div.style.height = (window.innerHeight - div.offsetTop - 16) + "px";
+onWindowResize = function () {
+    div.style.height = (window.innerHeight - div.offsetTop - 16) + "px";
     ctx.canvas.width = div.offsetWidth;
     ctx.canvas.height = div.offsetHeight;
     tableWidth = Math.round(ctx.canvas.width / cellWidth);
@@ -519,18 +511,24 @@ onWindowResize = function() {
     table.update();
 }
 
-
-document.addEventListener('DOMContentLoaded', function () {
-	const params = new URLSearchParams(window.location.search)
-	if (params.has('id')) {
-		openDocument(params.get('id'));
-	} else if (params.has('createnew') && params.get('createnew')) {
+onDocumentLoaded = function () {
+    const params = new URLSearchParams(window.location.search)
+    if (params.has('id')) {
+        openDocument(params.get('id'));
+    } else if (params.has('createnew') && params.get('createnew')) {
         history.replaceState(null, null, '?');
         createNewDocument();
     }
     onWindowResize();
-});
+}
 
-document.body.onresize = function() {
-	onWindowResize();
+if (document.readyState === "complete" || document.readyState === "loaded") {
+    onDocumentLoaded();
+}
+else {
+    document.addEventListener('DOMContentLoaded', onDocumentLoaded);
+}
+
+document.body.onresize = function () {
+    onWindowResize();
 };
