@@ -3,24 +3,25 @@
    <head>
       <meta charset="utf-8">
       <title>Регистрация</title>
+      <script src="AuthManager.js"></script>
    </head>
 
    <form method="POST" action="" name="signup-form">
     <table>
         <tr class="form-element">
             <td>Факултетен номер</td>
-            <td> <input type="number" name="facultyNumber" required /> </td>
+            <td> <input type="number" name="facultyNumber" id = "facultyNumber" required /> </td>
         </tr>
          <tr class="form-element">
             <td>Потребителско име</td>
-            <td> <input type="text" name="sername" pattern="[a-zA-Z]+" required /> </td>
+            <td> <input type="text" name="username"  id = "username"pattern="[a-zA-Z]+" required /> </td>
          </tr>
          <tr class="form-element">
             <td>Парола</td>
-            <td><input type="password" name="password" required /> </td>
+            <td><input type="password" name="password" id = "password" required /> </td>
          </tr>
     </table>
  
-      <button type="submit" name="register" value="register">Регистрация</button>
+      <button type="submit" name="register" value="register" onclick="RegisterUser()">Регистрация</button>
    </form>
 </html>
