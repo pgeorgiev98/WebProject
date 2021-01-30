@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <title>Регистрация</title>
+   </head>
+
+   <form method="POST" action="" name="signup-form">
+    <table>
+        <tr class="form-element">
+            <td>Факултетен номер</td>
+            <td> <input type="number" name="facultyNumber" required /> </td>
+        </tr>
+         <tr class="form-element">
+            <td>Потребителско име</td>
+            <td> <input type="text" name="sername" pattern="[a-zA-Z]+" required /> </td>
+         </tr>
+         <tr class="form-element">
+            <td>Парола</td>
+            <td><input type="password" name="password" required /> </td>
+         </tr>
+    </table>
+ 
+      <button type="submit" name="register" value="register">Регистрация</button>
+   </form>
+</html>
