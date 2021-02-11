@@ -17,7 +17,7 @@ class Document {
 		return $this->rows[y][x];
 	}
 
-	public function setCell(int $x, int $y, string $value) {
+	public function setCell(int $x, int $y, array $value) {
 		// TODO: Maybe clear trailing empty cells
 		for ($i = count($this->rows); $i <= $y; $i++) {
 			$this->rows[$i] = [];

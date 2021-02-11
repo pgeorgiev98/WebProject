@@ -4,11 +4,32 @@ class Cell {
         this.col = col;
         this.text = "";
         this.evaluated = "";
+        this.style = 0;
     }
 
     setText(text) {
         this.evaluated = evaluate(text);
         this.text = text;
+        this.style = currentStyle;
+    }
+
+    encode() {
+        return '["' + this.text + '", ' + this.style + ']';
+    }
+
+    decode(cellValue) {
+        this.text = "";
+        this.evaluated = "";
+        this.style = 0;
+        if(cellValue.length > 0)
+        {
+            this.text = cellValue[0];
+            this.evaluated = evaluate(this.text);
+        }
+        if(cellValue.length > 1)
+        {
+            this.style = cellValue[1];
+        }
     }
 }
 
@@ -57,6 +78,7 @@ class Table {
                 }
                 ctx.strokeRect(x_pos, y_pos, cellWidth, cellHeight);
                 ctx.fillStyle = "black";
+                ctx.font = decodeStyle(cell.style) + "15px Times New Roman";
                 ctx.fillText(textToDisplay, x_pos + (cellWidth / 2), y_pos + (cellHeight / 2));
             }
         }
@@ -84,7 +106,7 @@ class Table {
             var r = parseInt(row);
             for (var col in data[r]) {
                 var c = parseInt(col);
-                this.getCell(r, c).setText(data[r][c]);
+                this.getCell(r, c).decode(data[r][c]);
             }
         }
     }

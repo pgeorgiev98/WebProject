@@ -3,6 +3,11 @@ var canvas = document.getElementById("canvas");
 var input = document.getElementById("input-value");
 var ctx = canvas.getContext("2d");
 
+var bold = document.getElementById("bold-button");
+var italic = document.getElementById("italic-button");
+var underline = document.getElementById("underline-button");
+var strike = document.getElementById("strikethrough-button");
+
 var cellHeight = 30;
 var cellWidth = 80;
 
@@ -12,3 +17,5 @@ var firstColumn = 0;
 const blue_accent_color = "#C3DBE3";
 const header_color = "#C3DBE3";
 const header_accent_color = "#99ADB4";
+
+var currentStyle = 0;

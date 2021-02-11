@@ -54,7 +54,7 @@ connect = function (id) {
             var x = obj['x'];
             var y = obj['y'];
             var value = obj['value'];
-            table.getCell(y, x).setText(value);
+            table.getCell(y, x).decode(value);
             table.update();
         }
     }
@@ -72,10 +72,11 @@ setCell = function () {
 
     var value = document.getElementById("input-value").value;
 
-    table.getCell(y, x).setText(value);
+    var cell = table.getCell(y, x);
+    cell.setText(value);
     table.update();
 
-    socket.send('{"command": "set_cell", "x": ' + x + ', "y": ' + y + ', "value": "' + value + '"}');
+    socket.send('{"command": "set_cell", "x": ' + x + ', "y": ' + y + ', "value": ' + cell.encode() + '}');
 }
 
 
