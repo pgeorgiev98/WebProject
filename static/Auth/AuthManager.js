@@ -1,8 +1,13 @@
 var username = document.getElementById("username");
 var password = document.getElementById("password");
+var registerButton = document.getElementById("registerButton");
 var facultyNumber = document.getElementById("facultyNumber");
 
-const url = "AuthManager.php"
+registerButton.onclick = RegisterUser;
+
+//console.log(registerButton.onclick);
+
+const url = "../../api/register.php"
 const body = {
     username: username,
     password: password,
@@ -14,10 +19,12 @@ const params = {
     method: "POST"
 }
 
-RegisterUser= function () {
+
+function RegisterUser(){
+    console.log("here");
     fetch(url, params)
         .then(response => response.json())
-        .then(json => { console.log(json)})
+        .then(json => { console.log(json) })
         .catch((error) => {
             console.log("Error: " + error); 
         });

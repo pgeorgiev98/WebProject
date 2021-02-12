@@ -3,25 +3,28 @@
    <head>
       <meta charset="utf-8">
       <title>Регистрация</title>
-      <script src="AuthManager.js"></script>
    </head>
 
-   <form method="POST" action="" name="signup-form">
-    <table>
-        <tr class="form-element">
-            <td>Факултетен номер</td>
-            <td> <input type="number" name="facultyNumber" id = "facultyNumber" required /> </td>
-        </tr>
-         <tr class="form-element">
-            <td>Потребителско име</td>
-            <td> <input type="text" name="username"  id = "username"pattern="[a-zA-Z]+" required /> </td>
-         </tr>
-         <tr class="form-element">
-            <td>Парола</td>
-            <td><input type="password" name="password" id = "password" required /> </td>
-         </tr>
-    </table>
- 
-      <button type="submit" name="register" value="register" onclick="RegisterUser()">Регистрация</button>
-   </form>
+   <body>
+      <form method="POST" action="" name="signup-form">
+         <table>
+               <td>Факултетен номер</td>
+               <td> <input type="number" name="facultyNumber" id = "facultyNumber" required /> </td>
+            </tr>
+            <tr class="form-element">
+               <td>Потребителско име</td>
+               <td> <input type="text" name="username"  id = "username"pattern="[a-zA-Z]+[0-9]*" required /> </td>
+            </tr>
+            <tr class="form-element">
+               <td>Парола</td>
+               <td><input type="password" name="password" id = "password" required /> </td>
+            </tr>
+         </table>
+      
+         <button type="submit" name="register" id = "registerButton" value="register">Регистрация</button>
+      </form>
+
+      <script type="text/javascript" src="AuthManager.js"></script>
+   </body>
+  
 </html>
