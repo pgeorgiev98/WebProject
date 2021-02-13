@@ -1,25 +1,53 @@
 <?php
     session_start();
-    include('db_config.php');
 
-    if (isset($_POST['login'])) {
-        $facultyNumber = $_POST['facultyNumber'];
-        $password = $_POST['password'];
-
-        $query = $connection->prepare("SELECT * FROM users WHERE facultyNumber=:facultyNumber");
-        $query->bindParam("facultyNumber", $facultyNumber, PDO::PARAM_STR);
-        $query->execute();
-        $result = $query->fetch(PDO::FETCH_ASSOC);
-
-        if (!$result) {
-            echo '<p class="error">Въведените парола и фн. са грешни!</p>';
-        } else {
-            if (password_verify($password, $result['password'])) {
-                $_SESSION['user_id'] = $result['id'];
-                echo '<p class="success">Успешно влизане!</p>';
-            } else {
-                echo '<p class="error">Username password combination is wrong!</p>';
-            }
-        }
+    function query(mysqli $conn, string $q) {
+        if (!$conn->query($q)) {
+            internal_server_error();
+        } 
     }
+
+    function internal_server_error() {
+        http_response_code(500);
+        exit("500 - Internal Server Error");
+    }
+
+    $servername = "localhost";
+    $usernameDB = "sheets";
+    $passwordDB = "badpassword";
+    $db = "sheets";
+
+    $link = mysqli_connect($servername, $usernameDB, $passwordDB, $db);
+    $conn = new mysqli($servername, $usernameDB, $passwordDB);
+
+    if ($conn->connect_error) {
+        internal_server_error();
+    }
+
+    $data = json_decode(file_get_contents("php://input"));
+    $facultyNumber = $data->facultyNumber;
+    $password = $data->password;
+
+    $sql = "SELECT * FROM users WHERE facultyNumber = $facultyNumber"; 
+    query($conn, "use " . $db);
+    $result = $conn->query($sql);
+
+    
+    if ($result->num_rows > 0) {
+        if ($row = $result->fetch_assoc()) {
+            if (strcmp($row["password"], $password) == 0) {
+                exit($row["password"] . " " . $password);
+                $_SESSION["userID"] = $id;
+                http_response_code(200);
+            } else {
+                http_response_code(404); // Wrong Pass
+                exit("Wrong Password");
+            }
+        } else {
+            internal_server_error();
+        }
+    } else {
+        internal_server_error();
+    }
+     
 ?>
