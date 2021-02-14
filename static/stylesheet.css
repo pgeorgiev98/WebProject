@@ -15,14 +15,26 @@ input, button {
     display: block;
     white-space: pre;
 }
-.style-buttons button, .document-buttons button, .btn, .btn_cancel, select, input[type=file]::file-selector-button{
-    box-shadow: insert, black;
-    background: var(--accent_grey);
-    border-radius: 5px;
-    display: inline-block;
-    cursor: pointer;
-    border: none;
+.style-buttons button, .document-buttons button, .btn, .btn_cancel, select {
+	background-color: white;
+	box-shadow: insert, black;
+	background: #eceff1;
+	border-radius: 5px;
+	display: inline-block;
+	cursor: pointer;
+	border: none;
 }
+
+input[type=file]::file-selector-button {
+	background-color: white;
+	box-shadow: insert, black;
+	background: #eceff1;
+	border-radius: 5px;
+	display: inline-block;
+	cursor: pointer;
+	border: none;
+}
+
 .document-buttons :focus, .btn:focus, .btn_cancel:focus {
     background: var(--accent_blue);
     top: 1px;
@@ -82,4 +94,7 @@ input[type=file]::file-selector-button {
 }
 label, h2 {
     font-family: 'Arial';
+}
+#download-csv-button {
+	float: right;
 }

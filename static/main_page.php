@@ -23,13 +23,13 @@
             <button type="button" class="btn-primary wauto hauto" >Създай</button>
         </a>
         <a id="upload-csv-button" >
-            <button type="button" class="btn-primary wauto hauto" >Качи</button>
+            <button type="button" class="btn-primary wauto hauto" onclick="openUploadForm()">Качи</button>
         </a>
-        <input id = "documentName" type="text"  class = "Inputs p30 placeholder="Име на файл" required/> 
-        <div id="messageHolder">
-        <div> 
+        <input id = "documentName" type="text"  class = "Inputs p30" placeholder="Име на файл" required/> 
 
+        <div id="messageHolder">
         </div>
+
         <div id="documents_holder" class="documents_holder">
             <div class="document" style="text-align: center; background: white; border: 2px solid #2196f3; color: #2196f3; font-weight: bold;">
                 Моите документи
@@ -38,7 +38,7 @@
             </table>
         </div>
 
-        <div id="footer_container" style="display: flex; align-items: right; justify-content: right">
+        <div id="footer_container" style="display: flex; align-items: right; justify-content: right; position: fixed; bottom: 0%; right: 0%; margin: 16px">
             <a href="https://learn.fmi.uni-sofia.bg/" target="_blank">
                 <img src="img/moodle.jpg" style="height: 50px; width: 100px">
             </a>
@@ -55,13 +55,12 @@
             </a> 
         </div>
 
-        <div id="csv-upload-form" class="form-popup">
+		<div id="csv-upload-form" class="form-popup">
+			<h2>Upload CSV</h2>
 			<form>
-				<h2>Upload CSV</h2>
-
 				<input id="file-upload" type="file" accept=".csv, .txt"></button>
 
-				<div>
+				<div id="selectDiv">
 					<label for="separator">Column separator:</label>
 					<select name="separator" id="upload-separator-select">
 						<option value="comma">Comma (,)</option>
@@ -72,8 +71,10 @@
 					</select>
 				</div>
 
-				<button type="button" class="btn" onclick="uploadCsv()">Upload</button>
-				<button type="button" class="btn cancel" onclick="closeUploadForm()">Cancel</button>
+				<div id="upload">
+					<button type="button" class="btn" onclick="uploadCsv()">Upload</button>
+				</div>
+				<button type="button" class="btn_cancel" onclick="closeUploadForm()">Cancel</button>
 			</form>
 		</div>
 

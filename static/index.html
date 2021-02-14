@@ -7,12 +7,6 @@
 		<link href="icons/css/all.css" rel="stylesheet">
     </head>
     <body>
-		<div class="document-buttons">
-			<button id="create-new-table-button">Create new table</button>
-			<button id="download-csv-button">Download as CSV</button>
-			<button id="upload-csv-button">Upload CSV</button>
-		</div>
-
 		<div id="csv-download-form" class="form-popup">
 			<h2>Download as CSV</h2>
 			<form>
@@ -31,29 +25,6 @@
 					<button type="button" class="btn" onclick="downloadCsv()">Download</button>
 				</a>
 				<button type="button" class="btn_cancel" onclick="closeDownloadForm()">Cancel</button>
-			</form>
-		</div>
-
-		<div id="csv-upload-form" class="form-popup">
-			<h2>Upload CSV</h2>
-			<form>
-				<input id="file-upload" type="file" accept=".csv, .txt"></button>
-
-				<div id="selectDiv">
-					<label for="separator">Column separator:</label>
-					<select name="separator" id="upload-separator-select">
-						<option value="comma">Comma (,)</option>
-						<option value="dot">Dot (.)</option>
-						<option value="semicolon">Semicolon (;)</option>
-						<option value="colon">Colon (:)</option>
-						<option value="tab">Tab</option>
-					</select>
-				</div>
-
-				<div id="upload">
-					<button type="button" class="btn" onclick="uploadCsv()">Upload</button>
-				</div>
-				<button type="button" class="btn_cancel" onclick="closeUploadForm()">Cancel</button>
 			</form>
 		</div>
 
@@ -82,6 +53,8 @@
 
 			<input id="colorPickerBg" type="color">
 			<input id="colorPickerFg" type="color">
+
+			<button id="download-csv-button" onclick="openDownloadForm()">Download as CSV</button>
 		</div>
 
 		<div id="input">

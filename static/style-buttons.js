@@ -7,6 +7,8 @@ var releasedStyle = 'box-shadow: insert, black;'+
                     'border: none;';
 var pressedStyle = 'background: #2196f3;'+
                    'position: relative;'+
+				   'border-radius: 5px;'+
+                   'border: none;';
                    'top:1px;';
 
 bold.addEventListener("click", function() {

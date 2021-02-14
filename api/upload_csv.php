@@ -10,6 +10,7 @@ $servername = "localhost";
 $username = "sheets";
 $password = "badpassword";
 $db = "sheets";
+session_start();
 
 function bad_request() {
 	http_response_code(400);
@@ -74,6 +75,11 @@ if ($sep === 'comma') {
 	bad_request();
 }
 
+if (!isset($_POST["name"])) {
+	bad_request();
+}
+$name = $_POST["name"];
+
 $link = mysqli_connect($servername, $username, $password, $db);
 $conn = new mysqli($servername, $username, $password);
 if ($conn->connect_error) {
@@ -82,10 +88,10 @@ if ($conn->connect_error) {
 
 $owner_id = $_SESSION["userID"];
 $contents = file_get_contents($path);
-$doc = new Document($id, "TODO");
+$doc = new Document($id, $name);
 $doc->setFromCsv($contents, $sep);
 query($conn, "use " . $db);
-query($conn, "INSERT INTO documents(id, table_data, owner_id) VALUES('" . $id . "', '[]', '$owner_id')");
+query($conn, "INSERT INTO documents(id, table_data, owner_id, name) VALUES('" . $id . "', '[]', '$owner_id', '$name')");
 $doc->saveToDB($conn);
 
 echo json_encode(array(

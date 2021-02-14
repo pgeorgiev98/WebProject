@@ -1,8 +1,3 @@
-//document.getElementById("download-csv-button").addEventListener("click", openDownloadForm);
-document.getElementById("upload-csv-button").addEventListener("click", openUploadForm);
-
-/*
-
 function openDownloadForm() {
 	document.getElementById("csv-download-form").style.display = "block";
 }
@@ -10,7 +5,7 @@ function openDownloadForm() {
 function closeDownloadForm() {
 	document.getElementById("csv-download-form").style.display = "none";
 }
-*/
+
 function openUploadForm() {
 	document.getElementById("csv-upload-form").style.display = "block";
 }
@@ -19,7 +14,6 @@ function closeUploadForm() {
 	document.getElementById("csv-upload-form").style.display = "none";
 }
 
-/*
 function downloadCsv() {
 	const separator = document.getElementById("download-separator-select").value;
 	const link = document.getElementById("csv-download-link");
@@ -33,13 +27,23 @@ function downloadCsv() {
 	// TODO: Error handling
 }
 
-*/
+function filename(path) {
+	var a = path.split('/');
+	a = a[a.length - 1];
+	a = path.split('\\');
+	a = a[a.length - 1];
+	a = a.split('.');
+	a.pop();
+	return a.join('.');
+}
 
 async function uploadCsv() {
 	const separator = document.getElementById("upload-separator-select").value;
 	const uploadInput = document.getElementById("file-upload");
+	const name = filename(uploadInput.value);
 	if (uploadInput.files.length == 1) {
 		const formData = new FormData();
+		formData.append('name', name);
 		formData.append('sep', separator);
 		formData.append('file', uploadInput.files[0]);
 		fetch('/api/upload_csv.php', {
@@ -55,7 +59,7 @@ async function uploadCsv() {
 		.then(json => {
 			const id = json["id"]; // TODO: error check
 			closeUploadForm();
-			openDocument(id);
+			document.location.href = "index.html?id=" + id;
 		})
 		.catch((error) => {
 			console.log("Error: " + error); // TODO
