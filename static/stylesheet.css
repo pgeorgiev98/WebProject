@@ -15,7 +15,7 @@ input, button {
     display: block;
     white-space: pre;
 }
-.style-buttons button, .document-buttons button {
+.style-buttons button, .document-buttons button, .btn, .btn_cancel, select, input[type=file]::file-selector-button{
     box-shadow: insert, black;
     background: var(--accent_grey);
     border-radius: 5px;
@@ -23,7 +23,7 @@ input, button {
     cursor: pointer;
     border: none;
 }
-.document-buttons :focus {
+.document-buttons :focus, .btn:focus, .btn_cancel:focus {
     background: var(--accent_blue);
     top: 1px;
     position: relative;
@@ -42,7 +42,6 @@ input[type=color]:focus {
 }
 .form-popup {
 	display: none;
-	border: 3px solid #121212;
 	background-color: #fefefe;
 	z-index: 9;
 	position: fixed;
@@ -50,4 +49,37 @@ input[type=color]:focus {
 	left: 50%;
 	transform: translate(-50%, -50%);
 	padding: 24px;
+    border-width: thick; 
+    border-radius: 12px;
+    border: var(--accent_blue) solid 3px;
+    border-bottom: var(--accent_blue) solid 4px;
+    padding-top: 0px;
+    text-align:center;
+}
+#selectDiv{
+    padding-bottom: 20px;
+}
+.btn_cancel, .btn{
+    width: 90%;
+}
+#csv-download-link:after, #csv-upload-form > form > #upload:after{
+    content: "\A";
+    display: block;
+    white-space: pre;
+}
+select{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: url(../br_down.webp) no-repeat right var(--accent_grey);
+    background-position-x: 130px;
+    appearance: none;
+    width: 150px;
+    height: 30px;
+}
+input[type=file]::file-selector-button {
+    width: 150px;
+    height: 30px;
+}
+label, h2 {
+    font-family: 'Arial';
 }
