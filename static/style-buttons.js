@@ -38,16 +38,10 @@ right.addEventListener("click", function() {
     onStyleButtonClicked();
 });
 
-cp.addEventListener("input", function() {
-    currentBackgroundColor = cp.value;
+cp.addEventListener("change", function() {
     table.onFocus.background = cp.value;
     table.update();
     table.onFocus.saveCell();
-});
-
-cp.addEventListener("change", function() {
-    currentBackgroundColor = "#ffffff";
-    table.onFocus.background = cp.value;
 });
 
 function decodeStyle(styleVal) {
