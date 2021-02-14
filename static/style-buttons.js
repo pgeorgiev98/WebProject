@@ -1,9 +1,13 @@
-var releasedStyle = 'box-shadow: insert, black; '+
-                    'background: linear-gradient(to bottom, #F0EEE2  5%, #99ADB4 100%);'+
-                    'background-color: white;';
-var pressedStyle = 'background: black;'+
-                   'background-color: #99ADB4;'+
-                   'top:1px; position: relative;';
+var releasedStyle = 'box-shadow: insert, black;'+
+                    'background-color: white;'+
+                    'background: #eceff1;'+
+                    'border-radius: 5px;'+
+                    'display: inline-block;'+
+                    'cursor: pointer;'+
+                    'border: none;';
+var pressedStyle = 'background: #2196f3;'+
+                   'position: relative;'+
+                   'top:1px;';
 
 bold.addEventListener("click", function() {
     table.onFocus.style ^= 1;
@@ -106,7 +110,6 @@ function pressStyleButton(press, button) {
     else {
         return;
     }
-
     button.style = press ? pressedStyle : releasedStyle;
 }
 
