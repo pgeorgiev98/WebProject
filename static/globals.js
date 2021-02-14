@@ -12,7 +12,8 @@ var left = document.getElementById("align-left");
 var center = document.getElementById("align-center");
 var right = document.getElementById("align-right");
 
-var cp = document.getElementById("colorPicker");
+var cpb = document.getElementById("colorPickerBg");
+var cpf = document.getElementById("colorPickerFg");
 
 var cellHeight = 30;
 var cellWidth = 80;

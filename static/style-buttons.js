@@ -38,8 +38,14 @@ right.addEventListener("click", function() {
     onStyleButtonClicked();
 });
 
-cp.addEventListener("change", function() {
-    table.onFocus.background = cp.value;
+cpb.addEventListener("change", function() {
+    table.onFocus.background = cpb.value;
+    table.update();
+    table.onFocus.saveCell();
+});
+
+cpf.addEventListener("change", function() {
+    table.onFocus.color = cpf.value;
     table.update();
     table.onFocus.saveCell();
 });
@@ -89,7 +95,8 @@ function clickOnFocusStyles() {
     pressStyleButton((style & 4), "underline");
     pressStyleButton((style & 8), "strike");
 
-    cp.value = table.onFocus.background;
+    cpb.value = table.onFocus.background;
+    cpf.value = table.onFocus.color;
 }
 
 function pressStyleButton(press, button) {

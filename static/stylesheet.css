@@ -20,7 +20,7 @@ input, button {
     cursor: pointer;
     border: none;
 }
-#colorPicker {
+input[type=color] {
     width: 5%;
     height: 35px;
     box-shadow: insert, black;

@@ -6,6 +6,7 @@ class Cell {
         this.evaluated = "";
         this.style = 0;
         this.background = "#ffffff";
+        this.color = "#000000";
     }
 
     setText(text) {
@@ -14,7 +15,7 @@ class Cell {
     }
 
     encode() {
-        return '["' + this.text + '", ' + this.style + ', "' + this.background + '"]';
+        return '["' + this.text + '", ' + this.style + ', "' + this.background + '", "'+ this.color + '"]';
     }
 
     decode(cellValue) {
@@ -22,6 +23,7 @@ class Cell {
         this.evaluated = "";
         this.style = 0;
         this.background = "#ffffff";
+        this.color = "#000000";
         if(cellValue.length > 0)
         {
             this.text = cellValue[0];
@@ -34,6 +36,10 @@ class Cell {
         if(cellValue.length > 2)
         {
             this.background = cellValue[2];
+        }
+        if(cellValue.length > 3)
+        {
+            this.color = cellValue[3];
         }
     }
 
@@ -103,8 +109,7 @@ class Table {
                     ctx.strokeRect(x_pos, y_pos, cellWidth, cellHeight);
                 }
                 ctx.strokeWeight = 1;
-
-                ctx.fillStyle = "black";
+                ctx.fillStyle = cell.color;
 
                 var style = cell.style;
                 var align = decodeAlign(style);
