@@ -40,6 +40,8 @@ document.getElementById("create-new-table-button").addEventListener("click", fun
 });
 
 function connect(id) {
+    table.clear();
+
     const hostname = window.location.hostname;
     socket = new WebSocket('ws://' + hostname + ':8080');
 
