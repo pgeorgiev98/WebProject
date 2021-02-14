@@ -22,7 +22,6 @@
         }
         ?>
 
-        <div>
         <a id="create-new-table-button" >
             <button type="button" class="btn" >Създай</button>
         </a>
@@ -31,8 +30,6 @@
             <button type="button" class="btn" >Качи</button>
         </a>
 
-        </div>
-       
         <div id="documents_holder" style="width: 30%; margin: auto; border: 2px solid black">
             <table id="documents_table">
             </table>
@@ -68,6 +65,6 @@
 
         <script type="text/javascript" src="./main_page_manager.js"></script>
         <script type="text/javascript" src="./csv.js"></script>
-        <script type="text/javascript" src="./used_documents"></script>
+        <script type="text/javascript" src="./used_documents.js"></script>
     </body>
 </html>

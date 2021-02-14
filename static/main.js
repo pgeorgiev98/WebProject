@@ -6,11 +6,11 @@ window.onmousemove = function (event) {
     onMouseMove(event);
 }
 
-getDocument = function () {
+function getDocument() {
     socket.send('{"command": "get_document_json"}');
 }
 
-openDocument = function (id) {
+function openDocument(id) {
     var params = new URLSearchParams(window.location.search)
     params.set('id', id);
     // Add the id to the url in the address bar
@@ -18,7 +18,7 @@ openDocument = function (id) {
     connect(id);
 }
 
-createNewDocument = function () {
+function createNewDocument() {
     fetch("/api/create.php?name=TODO")
         .then(response => response.json())
         .then(json => {
@@ -39,7 +39,9 @@ document.getElementById("create-new-table-button").addEventListener("click", fun
     }
 });
 
-connect = function (id) {
+function connect(id) {
+    table.clear();
+
     const hostname = window.location.hostname;
     socket = new WebSocket('ws://' + hostname + ':8080');
 
@@ -66,26 +68,12 @@ connect = function (id) {
     }
 }
 
-setCell = function () {
-    var x = table.onFocus.col;
-    var y = table.onFocus.row;
-
-    var value = document.getElementById("input-value").value;
-
-    var cell = table.getCell(y, x);
-    cell.setText(value);
-    table.update();
-
-    socket.send('{"command": "set_cell", "x": ' + x + ', "y": ' + y + ', "value": ' + cell.encode() + '}');
-}
-
-
-drawScrollbars = function () {
+function drawScrollbars() {
     hScroll.draw();
     vScroll.draw();
 }
 
-getColName = function (index) {
+function getColName(index) {
     index += 1;
     var s = "";
     do {
@@ -96,7 +84,7 @@ getColName = function (index) {
     return s;
 }
 
-evaluate = function (input) {
+function evaluate(input) {
     if (input[0] == '=') {
         e = function (val) { return Function('return' + val)(); }
         try {
@@ -110,7 +98,7 @@ evaluate = function (input) {
 }
 
 
-onWindowResize = function () {
+function onWindowResize() {
     div.style.height = (window.innerHeight - div.offsetTop - 16) + "px";
     ctx.canvas.width = div.offsetWidth;
     ctx.canvas.height = div.offsetHeight;
@@ -122,7 +110,7 @@ onWindowResize = function () {
     }
 }
 
-onDocumentLoaded = function () {
+function onDocumentLoaded() {
     const params = new URLSearchParams(window.location.search)
     if (params.has('id')) {
         openDocument(params.get('id'));

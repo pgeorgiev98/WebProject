@@ -53,12 +53,26 @@ class Document {
 			foreach ($row as $cell) {
 				$str = (empty($cell) ? '' : $cell[0]);
 				$str = str_replace($sep, '?', $str);
-				$next_row[] = $str;
+				$new_row[] = $str;
 			}
-			$csv .= join($sep, $next_row);
+			$csv .= join($sep, $new_row);
 			$csv .= "\n";
 		}
 		return $csv;
+	}
+
+	public function setFromCsv($csv, $sep) {
+		$this->rows = explode("\n", $csv);
+		foreach ($this->rows as &$row) {
+			$row = explode($sep, $row);
+			foreach ($row as &$cell) {
+				$cell = [$cell];
+			}
+		}
+	}
+
+	public function saveToDB($conn) {
+		return $conn->query("UPDATE documents SET table_data='" . json_encode($this->rows) . "' WHERE id='" . $this->id . "'");
 	}
 }
 

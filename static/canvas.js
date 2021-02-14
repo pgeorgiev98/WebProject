@@ -1,4 +1,4 @@
-onMouseDown = function (canvas, event) {
+function onMouseDown(canvas, event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
@@ -31,6 +31,8 @@ onMouseDown = function (canvas, event) {
             cell = table.getCell(row, col);
         }
 
+        clickOnFocusStyles();
+
         document.getElementById("input-value").value = cell.text;
         document.getElementById("input-value").focus();
     }
@@ -38,7 +40,7 @@ onMouseDown = function (canvas, event) {
     table.update();
 }
 
-onMouseUp = function (event) {
+function onMouseUp(event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
@@ -48,7 +50,7 @@ onMouseUp = function (event) {
     table.update();
 }
 
-onMouseMove = function (event) {
+function onMouseMove(event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
@@ -68,7 +70,6 @@ canvas.onmousedown = function (event) {
 input.addEventListener("keydown", function (event) {
     if (event.key == "Enter") {
         event.preventDefault();
-        setCell();
 
         newRow = table.onFocus.row + 1;
         table.rowOnFocus = -1;
@@ -76,14 +77,9 @@ input.addEventListener("keydown", function (event) {
 
         cell = table.getCell(newRow, table.onFocus.col);
         table.onFocus = cell;
-
-        document.getElementById("input-value").value = table.onFocus.text;
-        document.getElementById("input-value").focus();
-        table.update();
     }
     if (event.key == "Tab") {
         event.preventDefault();
-        setCell();
 
         newCol = table.onFocus.col + 1;
         table.rowOnFocus = -1;
@@ -92,15 +88,23 @@ input.addEventListener("keydown", function (event) {
         cell = table.getCell(table.onFocus.row, newCol);
         table.onFocus = table.getCell(table.onFocus.row, 0);
         table.onFocus = cell;
-
+    }
+    if(event.key == "Delete") {
+        table.onFocus.setText("");
         document.getElementById("input-value").value = table.onFocus.text;
-        document.getElementById("input-value").focus();
         table.update();
     }
+    document.getElementById("input-value").value = table.onFocus.text;
+    document.getElementById("input-value").focus();
+
+    clickOnFocusStyles();
+    table.update();
 });
 
 input.addEventListener("input", function (event) {
-    setCell();
+    table.onFocus.setText(input.value);
+    table.onFocus.saveCell();
+    table.update();
 });
 
 div.addEventListener("wheel", function (event) {

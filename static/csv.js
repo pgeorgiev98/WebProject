@@ -1,7 +1,8 @@
-document.getElementById("download-csv-button").addEventListener("click", openDownloadForm);
+//document.getElementById("download-csv-button").addEventListener("click", openDownloadForm);
 document.getElementById("upload-csv-button").addEventListener("click", openUploadForm);
 
 /*
+
 function openDownloadForm() {
 	document.getElementById("csv-download-form").style.display = "block";
 }
@@ -31,7 +32,9 @@ function downloadCsv() {
 	}
 	// TODO: Error handling
 }
+
 */
+
 async function uploadCsv() {
 	const separator = document.getElementById("upload-separator-select").value;
 	const uploadInput = document.getElementById("file-upload");
