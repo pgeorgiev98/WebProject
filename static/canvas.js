@@ -106,6 +106,7 @@ input.addEventListener("keydown", function (event) {
 input.addEventListener("input", function (event) {
     table.onFocus.setText(input.value);
     table.onFocus.saveCell();
+    table.update();
 });
 
 div.addEventListener("wheel", function (event) {
