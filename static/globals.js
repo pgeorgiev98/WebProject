@@ -23,5 +23,3 @@ var firstColumn = 0;
 const blue_accent_color = "#C3DBE3";
 const header_color = "#C3DBE3";
 const header_accent_color = "#99ADB4";
-
-var currentBackgroundColor = "#ffffff";

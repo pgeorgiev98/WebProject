@@ -86,6 +86,9 @@ function clickOnFocusStyles() {
     styles.map(st => pressStyleButton(cellStyle.split(" ").includes(st), st));
     aligns.map(al => pressStyleButton(cellAlign.split(" ").includes(al), al));
 
+    pressStyleButton((style & 4), "underline");
+    pressStyleButton((style & 8), "strike");
+
     cp.value = table.onFocus.background;
 }
 
@@ -97,7 +100,7 @@ function pressStyleButton(press, button) {
         return;
     }
 
-    button.style = press == true ? pressedStyle : releasedStyle;
+    button.style = press ? pressedStyle : releasedStyle;
 }
 
 function onStyleButtonClicked() {

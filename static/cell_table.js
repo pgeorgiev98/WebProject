@@ -111,10 +111,10 @@ class Table {
                 ctx.textAlign = align;
                 var offset = 0;
 
-                if(align == "center") {
+                if (align == "center") {
                     offset += cellWidth / 2;
                 }
-                else if(align == "right") {
+                else if (align == "right") {
                     offset += cellWidth - 3;
                 }
                 else {
@@ -123,6 +123,40 @@ class Table {
 
                 ctx.font = decodeStyle(style) + "15px Times New Roman";
                 ctx.fillText(textToDisplay, x_pos + offset, y_pos + (cellHeight / 2));
+
+                //draw underline and strike
+                var textLen = ctx.measureText(textToDisplay).width;
+                var line_x_start = x_pos + offset, line_x_end = line_x_start;
+                var line_y = y_pos + (cellHeight / 2) + 15 / 2;
+                ctx.strokeStyle = "black";
+                ctx.lineWidth = 1;
+
+                if (align == "center") {
+                    line_x_start -= textLen / 2;
+                    line_x_end += textLen / 2;
+                }
+                else if (align == "right") {
+                    line_x_end -= textLen;
+                }
+                else {
+                    line_x_end += textLen;
+                }
+
+                if (style & 4) {
+                    //underline
+                    ctx.beginPath();
+                    ctx.moveTo(line_x_start, line_y);
+                    ctx.lineTo(line_x_end, line_y);
+                    ctx.stroke();
+                }
+                if (style & 8) {
+                    //strikethrough
+                    line_y -= Math.round(15/2);
+                    ctx.beginPath();
+                    ctx.moveTo(line_x_start, line_y);
+                    ctx.lineTo(line_x_end, line_y);
+                    ctx.stroke();
+                }
             }
         }
 
@@ -156,7 +190,7 @@ class Table {
     }
 }
 
-drawHeaders = function (tableWidth, tableHeight) {
+function drawHeaders(tableWidth, tableHeight) {
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
 

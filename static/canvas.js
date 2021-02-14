@@ -1,4 +1,4 @@
-onMouseDown = function (canvas, event) {
+function onMouseDown(canvas, event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
@@ -40,7 +40,7 @@ onMouseDown = function (canvas, event) {
     table.update();
 }
 
-onMouseUp = function (event) {
+function onMouseUp(event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
@@ -50,7 +50,7 @@ onMouseUp = function (event) {
     table.update();
 }
 
-onMouseMove = function (event) {
+function onMouseMove(event) {
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
