@@ -15,8 +15,8 @@ var right = document.getElementById("align-right");
 var cpb = document.getElementById("colorPickerBg");
 var cpf = document.getElementById("colorPickerFg");
 
-var cellHeight = 30;
-var cellWidth = 80;
+const cellHeight = 30;
+const cellWidth = 80;
 
 var firstRow = 0;
 var firstColumn = 0;

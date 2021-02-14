@@ -126,7 +126,7 @@ class Table {
                     offset += 3;
                 }
 
-                ctx.font = decodeStyle(style) + "15px Times New Roman";
+                ctx.font = decodeStyle(style) + "15px Arial";
                 ctx.fillText(textToDisplay, x_pos + offset, y_pos + (cellHeight / 2));
 
                 //draw underline and strike
@@ -201,7 +201,7 @@ function drawHeaders(tableWidth, tableHeight) {
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.font = "15px Times New Roman";
+    ctx.font = "15px Arial";
 
     //draw top row
     for (var i = 0; i < tableWidth; i++) {

@@ -14,10 +14,9 @@
 		</div>
 
 		<div id="csv-download-form" class="form-popup">
+			<h2>Download as CSV</h2>
 			<form>
-				<h2>Download as CSV</h2>
-
-				<div>
+				<div id="selectDiv">
 					<label for="separator">Column separator:</label>
 					<select name="separator" id="download-separator-select">
 						<option value="comma">Comma (,)</option>
@@ -31,17 +30,16 @@
 				<a id="csv-download-link" href="" download="">
 					<button type="button" class="btn" onclick="downloadCsv()">Download</button>
 				</a>
-				<button type="button" class="btn cancel" onclick="closeDownloadForm()">Cancel</button>
+				<button type="button" class="btn_cancel" onclick="closeDownloadForm()">Cancel</button>
 			</form>
 		</div>
 
 		<div id="csv-upload-form" class="form-popup">
+			<h2>Upload CSV</h2>
 			<form>
-				<h2>Upload CSV</h2>
-
 				<input id="file-upload" type="file" accept=".csv, .txt"></button>
 
-				<div>
+				<div id="selectDiv">
 					<label for="separator">Column separator:</label>
 					<select name="separator" id="upload-separator-select">
 						<option value="comma">Comma (,)</option>
@@ -52,8 +50,10 @@
 					</select>
 				</div>
 
-				<button type="button" class="btn" onclick="uploadCsv()">Upload</button>
-				<button type="button" class="btn cancel" onclick="closeUploadForm()">Cancel</button>
+				<div id="upload">
+					<button type="button" class="btn" onclick="uploadCsv()">Upload</button>
+				</div>
+				<button type="button" class="btn_cancel" onclick="closeUploadForm()">Cancel</button>
 			</form>
 		</div>
 
@@ -79,6 +79,7 @@
 			<button id="align-center" class="align">
 				<i class="fas fa-align-center"></i>
 			</button>
+
 			<input id="colorPickerBg" type="color">
 			<input id="colorPickerFg" type="color">
 		</div>
