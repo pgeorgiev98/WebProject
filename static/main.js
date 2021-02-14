@@ -66,20 +66,6 @@ connect = function (id) {
     }
 }
 
-setCell = function () {
-    var x = table.onFocus.col;
-    var y = table.onFocus.row;
-
-    var value = document.getElementById("input-value").value;
-
-    var cell = table.getCell(y, x);
-    cell.setText(value);
-    table.update();
-
-    socket.send('{"command": "set_cell", "x": ' + x + ', "y": ' + y + ', "value": ' + cell.encode() + '}');
-}
-
-
 drawScrollbars = function () {
     hScroll.draw();
     vScroll.draw();

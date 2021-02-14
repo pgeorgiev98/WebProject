@@ -24,6 +24,15 @@ input, button {
     background: black;
     background-color: #99ADB4;
 }
+#colorPicker {
+    width: 5%;
+    height: 35px;
+    box-shadow: insert, black;
+    background: linear-gradient(to bottom, #F0EEE2  5%, #99ADB4 100%);
+    background-color: white;
+    border-radius: 5px;
+}
+/*
 .style-buttons button:focus {
     background: black;
     background-color: #99ADB4;
@@ -32,3 +41,4 @@ input, button {
     position: relative;
     top: 1px;
 }
+*/

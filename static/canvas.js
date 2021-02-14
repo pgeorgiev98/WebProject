@@ -31,6 +31,8 @@ onMouseDown = function (canvas, event) {
             cell = table.getCell(row, col);
         }
 
+        clickOnFocusStyles();
+
         document.getElementById("input-value").value = cell.text;
         document.getElementById("input-value").focus();
     }
@@ -68,7 +70,6 @@ canvas.onmousedown = function (event) {
 input.addEventListener("keydown", function (event) {
     if (event.key == "Enter") {
         event.preventDefault();
-        setCell();
 
         newRow = table.onFocus.row + 1;
         table.rowOnFocus = -1;
@@ -79,11 +80,12 @@ input.addEventListener("keydown", function (event) {
 
         document.getElementById("input-value").value = table.onFocus.text;
         document.getElementById("input-value").focus();
+
+        clickOnFocusStyles();
         table.update();
     }
     if (event.key == "Tab") {
         event.preventDefault();
-        setCell();
 
         newCol = table.onFocus.col + 1;
         table.rowOnFocus = -1;
@@ -95,12 +97,15 @@ input.addEventListener("keydown", function (event) {
 
         document.getElementById("input-value").value = table.onFocus.text;
         document.getElementById("input-value").focus();
+
+        clickOnFocusStyles();
         table.update();
     }
 });
 
 input.addEventListener("input", function (event) {
-    setCell();
+    table.onFocus.setText(input.value);
+    table.onFocus.saveCell();
 });
 
 div.addEventListener("wheel", function (event) {
