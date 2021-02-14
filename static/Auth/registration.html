@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <title>Регистрация</title>
+      <link rel="stylesheet" href="styles.css">
+   </head>
+
+   <body>
+      <div class="box">
+         <form method="POST" action="" name="signup-form">
+            <h1>Регистрация</h1>
+
+            <div >
+               <input type="number"  class = "Inputs" name="facultyNumber" id = "facultyNumber" placeholder="Факултетен номер" required />
+               <input type="text" name="username"  class = "Inputs"  id = "username" pattern="[a-zA-Z]+[0-9]*" placeholder="Потребителско име" required />
+               <input type="password" name="password" class = "Inputs" id = "password" placeholder="Парола" required /> 
+
+               <div class="text-center">
+                  <p>
+                     <button type="button" class="btn-primary" name="register" id = "registerButton" value="register">Регистрация</button>
+                  </p>
+               </div>
+           </div>
+            <br>
+            <div id="messageHolder">
+
+            </div>
+         </form>
+      </div>
+
+      <script type="text/javascript" src="RegistrationRequest.js"></script>
+   </body>
+  
+</html>
