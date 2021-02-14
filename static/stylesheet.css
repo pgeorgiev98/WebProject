@@ -70,7 +70,7 @@ input[type=color]:focus {
 select{
     -webkit-appearance: none;
     -moz-appearance: none;
-    background: url(../br_down.webp) no-repeat right var(--accent_grey);
+    background: url(icons/arrow.webp) no-repeat right var(--accent_grey);
     background-position-x: 130px;
     appearance: none;
     width: 150px;
