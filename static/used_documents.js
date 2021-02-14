@@ -1,8 +1,11 @@
 const table = document.getElementById("documents_table");
-const url = "../php/used_documents.php";
-const basicURL = "index.html?id=";
+const getDocURL = "../php/used_documents.php";
+var basicURL = "index.html?id=";
 
-window.onload = getDocuments();
+//MARK:- Load documents
+window.onload = getDocuments;
+
+// Get Documents
 
 function addEvents(){
     document.querySelectorAll(".document").forEach((doc) => {
@@ -20,19 +23,25 @@ function fillDocuments(data){
     table.innerHTML = '';
     data = JSON.parse(data);
     for(row of data){
-        let doc = document.createElement("tr");
-        doc.innerText = row.id;
+        if(!row.name){
+            continue;
+        }
+        let tr = document.createElement("tr");
+        let doc = document.createElement("div");
+        doc.innerText = row.name;
         doc.id = row.id;
         doc.classList.add("document");
-        table.appendChild(doc);
+        tr.appendChild(doc)
+        table.appendChild(tr);
     }
     
     addEvents();
 }
 
 function getDocuments(){
+    console.log("Get Documents")
     var xhttp = new XMLHttpRequest();
-    xhttp.open("GET", url, true); 
+    xhttp.open("GET", getDocURL, true); 
     xhttp.setRequestHeader("Content-Type", "application/json");
     xhttp.onreadystatechange = function() {
         let message = "";
@@ -51,3 +60,4 @@ function getDocuments(){
     
     xhttp.send();
 }
+

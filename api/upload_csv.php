@@ -80,11 +80,12 @@ if ($conn->connect_error) {
 	internal_server_error();
 }
 
+$owner_id = $_SESSION["userID"];
 $contents = file_get_contents($path);
 $doc = new Document($id, "TODO");
 $doc->setFromCsv($contents, $sep);
 query($conn, "use " . $db);
-query($conn, "INSERT INTO documents(id, table_data) VALUES('" . $id . "', '[]')");
+query($conn, "INSERT INTO documents(id, table_data, owner_id) VALUES('" . $id . "', '[]', '$owner_id')");
 $doc->saveToDB($conn);
 
 echo json_encode(array(

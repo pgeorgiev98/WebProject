@@ -1,5 +1,7 @@
-document.getElementById("download-csv-button").addEventListener("click", openDownloadForm);
+//document.getElementById("download-csv-button").addEventListener("click", openDownloadForm);
 document.getElementById("upload-csv-button").addEventListener("click", openUploadForm);
+
+/*
 
 function openDownloadForm() {
 	document.getElementById("csv-download-form").style.display = "block";
@@ -8,7 +10,7 @@ function openDownloadForm() {
 function closeDownloadForm() {
 	document.getElementById("csv-download-form").style.display = "none";
 }
-
+*/
 function openUploadForm() {
 	document.getElementById("csv-upload-form").style.display = "block";
 }
@@ -17,6 +19,7 @@ function closeUploadForm() {
 	document.getElementById("csv-upload-form").style.display = "none";
 }
 
+/*
 function downloadCsv() {
 	const separator = document.getElementById("download-separator-select").value;
 	const link = document.getElementById("csv-download-link");
@@ -29,6 +32,8 @@ function downloadCsv() {
 	}
 	// TODO: Error handling
 }
+
+*/
 
 async function uploadCsv() {
 	const separator = document.getElementById("upload-separator-select").value;
