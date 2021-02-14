@@ -45,7 +45,7 @@ if ($conn->connect_error) {
 $id = random_document_id();
 $owner_id = $_SESSION["userID"];
 query($conn, "use " . $db);
-query($conn, "INSERT INTO documents(id, table_data, owner_id) VALUES('" . $id . "', '[]', '$owner_id')");
+query($conn, "INSERT INTO documents(id, table_data, owner_id, name) VALUES('" . $id . "', '[]', '$owner_id', '$name')");
 
 echo json_encode(array(
 	"id" => $id,

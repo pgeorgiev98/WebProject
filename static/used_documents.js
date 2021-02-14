@@ -1,24 +1,11 @@
 const table = document.getElementById("documents_table");
 const getDocURL = "../php/used_documents.php";
-const basicURL = "index.html?id=";
+var basicURL = "index.html?id=";
 
 //MARK:- Load documents
-window.onload = getDocuments();
+window.onload = getDocuments;
 
 // Get Documents
-function createNewDocument() {
-    fetch("/api/create.php?name=TODO")
-        .then(response => response.json())
-        .then(json => {
-            const id = json["id"]; // TODO: error check
-           console.log("URL:" + basicURL + id )
-           let newUrl = basicURL + id;
-           document.location.href = newUrl;
-        })
-        .catch((error) => {
-            console.log("Error: " + error); // TODO
-        });
-}
 
 function addEvents(){
     document.querySelectorAll(".document").forEach((doc) => {
@@ -36,17 +23,23 @@ function fillDocuments(data){
     table.innerHTML = '';
     data = JSON.parse(data);
     for(row of data){
-        let doc = document.createElement("tr");
-        doc.innerText = row.id;
+        if(!row.name){
+            continue;
+        }
+        let tr = document.createElement("tr");
+        let doc = document.createElement("div");
+        doc.innerText = row.name;
         doc.id = row.id;
         doc.classList.add("document");
-        table.appendChild(doc);
+        tr.appendChild(doc)
+        table.appendChild(tr);
     }
     
     addEvents();
 }
 
 function getDocuments(){
+    console.log("Get Documents")
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET", getDocURL, true); 
     xhttp.setRequestHeader("Content-Type", "application/json");

@@ -3,13 +3,10 @@
     <head>
         <title>MyDocuments</title>
 		<meta charset="UTF-8">
-        <style>
-            .document {
-                text-decoration: underline;
-            }
-        </style>
-        <link rel="stylesheet" href="stylesheet.css">
+
+        <link rel="stylesheet" href="Auth/styles.css">
         <link href="icons/css/all.css" rel="stylesheet">
+        <link rel="stylesheet" href="stylesheet.css">
     </head>
 
     <body>
@@ -23,22 +20,39 @@
         ?>
 
         <a id="create-new-table-button" >
-            <button type="button" class="btn" >Създай</button>
+            <button type="button" class="btn-primary wauto hauto" >Създай</button>
         </a>
-
         <a id="upload-csv-button" >
-            <button type="button" class="btn" >Качи</button>
+            <button type="button" class="btn-primary wauto hauto" >Качи</button>
         </a>
+        <input id = "documentName" type="text"  class = "Inputs p30 placeholder="Име на файл" required/> 
+        <div id="messageHolder">
+        <div> 
 
-        <div id="documents_holder" style="width: 30%; margin: auto; border: 2px solid black">
-            <table id="documents_table">
+        </div>
+        <div id="documents_holder" class="documents_holder">
+            <div class="document" style="text-align: center; background: white; border: 2px solid #2196f3; color: #2196f3; font-weight: bold;">
+                Моите документи
+            </div>
+            <table id="documents_table" style="width: 100%; margin: auto">
             </table>
         </div>
 
-        <div>
+        <div id="footer_container" style="display: flex; align-items: right; justify-content: right">
+            <a href="https://learn.fmi.uni-sofia.bg/" target="_blank">
+                <img src="img/moodle.jpg" style="height: 50px; width: 100px">
+            </a>
+
+            <a href="https://susi.uni-sofia.bg/ISSU/forms/Login.aspx" target="_blank">
+                <img src="img/susi.jpg" style="height: 50px; width: 150px">
+            </a>
+
+            <a href="http://w15ref.w3c.fmi.uni-sofia.bg/" target="_blank">
+                <img src="img/puffin.png" style="height: 50px; width: 100px">
+            </a>
             <a id="logout_button">
-                <button type="button" class="btn" >Изглез</button>
-            </a>  
+                <button type="button" class="btn-primary wauto hauto" >Излез</button>
+            </a> 
         </div>
 
         <div id="csv-upload-form" class="form-popup">
