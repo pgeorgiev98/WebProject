@@ -101,6 +101,11 @@ input.addEventListener("keydown", function (event) {
         clickOnFocusStyles();
         table.update();
     }
+    if(event.key == "Delete") {
+        table.onFocus.setText("");
+        document.getElementById("input-value").value = table.onFocus.text;
+        table.update();
+    }
 });
 
 input.addEventListener("input", function (event) {
