@@ -8,6 +8,12 @@ var italic = document.getElementById("italic-button");
 var underline = document.getElementById("underline-button");
 var strike = document.getElementById("strikethrough-button");
 
+var left = document.getElementById("align-left");
+var center = document.getElementById("align-center");
+var right = document.getElementById("align-right");
+
+var cp = document.getElementById("colorPicker");
+
 var cellHeight = 30;
 var cellWidth = 80;
 
@@ -18,4 +24,4 @@ const blue_accent_color = "#C3DBE3";
 const header_color = "#C3DBE3";
 const header_accent_color = "#99ADB4";
 
-var currentStyle = 0;
+var currentBackgroundColor = "#ffffff";

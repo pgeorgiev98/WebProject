@@ -5,22 +5,23 @@ class Cell {
         this.text = "";
         this.evaluated = "";
         this.style = 0;
+        this.background = "#ffffff";
     }
 
     setText(text) {
         this.evaluated = evaluate(text);
         this.text = text;
-        this.style = currentStyle;
     }
 
     encode() {
-        return '["' + this.text + '", ' + this.style + ']';
+        return '["' + this.text + '", ' + this.style + ', "' + this.background + '"]';
     }
 
     decode(cellValue) {
         this.text = "";
         this.evaluated = "";
         this.style = 0;
+        this.background = "#ffffff";
         if(cellValue.length > 0)
         {
             this.text = cellValue[0];
@@ -30,6 +31,14 @@ class Cell {
         {
             this.style = cellValue[1];
         }
+        if(cellValue.length > 2)
+        {
+            this.background = cellValue[2];
+        }
+    }
+
+    saveCell() {
+        socket.send('{"command": "set_cell", "x": ' + this.col + ', "y": ' + this.row + ', "value": ' + this.encode() + '}');
     }
 }
 
@@ -53,35 +62,70 @@ class Table {
         ctx.strokeStyle = "black";
         ctx.lineWidth = 1;
 
-        ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         drawHeaders(tableWidth, tableHeight);
 
         for (var row = 0; row < tableHeight; row++) {
             for (var col = 0; col < tableWidth; col++) {
+
                 var cell = this.getCell(row + firstRow, col + firstColumn);
                 var textToDisplay = cell.evaluated;
                 var x_pos = col * cellWidth + cellWidth;
                 var y_pos = row * cellHeight + cellHeight;
-                if (col + firstColumn == this.colOnFocus) {
-                    ctx.fillStyle = blue_accent_color;
-                    ctx.fillRect(x_pos, y_pos, cellWidth, cellHeight);
-                }
-                if (row + firstRow == this.rowOnFocus) {
-                    ctx.fillStyle = blue_accent_color;
-                    ctx.fillRect(x_pos, y_pos, cellWidth, cellHeight);
-                }
-                if (col + firstColumn == this.onFocus.col && row + firstRow == this.onFocus.row) {
-                    ctx.fillStyle = blue_accent_color;
-                    ctx.fillRect(x_pos, y_pos, cellWidth, cellHeight);
-                    textToDisplay = cell.text;
-                }
+
+                ctx.fillStyle = cell.background;
+                ctx.fillRect(x_pos, y_pos, cellWidth, cellHeight);
+
+                ctx.strokeStyle = "black";
                 ctx.strokeRect(x_pos, y_pos, cellWidth, cellHeight);
-                ctx.fillStyle = "black";
-                ctx.font = decodeStyle(cell.style) + "15px Times New Roman";
-                ctx.fillText(textToDisplay, x_pos + (cellWidth / 2), y_pos + (cellHeight / 2));
             }
         }
+
+        for (var row = 0; row < tableHeight; row++) {
+            for (var col = 0; col < tableWidth; col++) {
+
+                var cell = this.getCell(row + firstRow, col + firstColumn);
+                var textToDisplay = cell.evaluated;
+                var x_pos = col * cellWidth + cellWidth;
+                var y_pos = row * cellHeight + cellHeight;
+
+                ctx.strokeStyle = blue_accent_color;
+                ctx.lineWidth = 2;
+
+                if (col + firstColumn == this.colOnFocus) {
+                    ctx.strokeRect(x_pos, y_pos, cellWidth, cellHeight);
+                }
+                if (row + firstRow == this.rowOnFocus) {
+                    ctx.strokeRect(x_pos, y_pos, cellWidth, cellHeight);
+                }
+                if (col + firstColumn == this.onFocus.col && row + firstRow == this.onFocus.row) {
+                    textToDisplay = cell.text;
+                    ctx.strokeRect(x_pos, y_pos, cellWidth, cellHeight);
+                }
+                ctx.strokeWeight = 1;
+
+                ctx.fillStyle = "black";
+
+                var style = cell.style;
+                var align = decodeAlign(style);
+                ctx.textAlign = align;
+                var offset = 0;
+
+                if(align == "center") {
+                    offset += cellWidth / 2;
+                }
+                else if(align == "right") {
+                    offset += cellWidth - 3;
+                }
+                else {
+                    offset += 3;
+                }
+
+                ctx.font = decodeStyle(style) + "15px Times New Roman";
+                ctx.fillText(textToDisplay, x_pos + offset, y_pos + (cellHeight / 2));
+            }
+        }
+
 
         drawScrollbars();
     }
@@ -113,12 +157,13 @@ class Table {
 }
 
 drawHeaders = function (tableWidth, tableHeight) {
-    //TODO make crispy
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
+    ctx.font = "15px Times New Roman";
+
     //draw top row
     for (var i = 0; i < tableWidth; i++) {
         ctx.fillStyle = (table.colOnFocus == i + firstColumn || table.onFocus.col == i + firstColumn) ? header_accent_color : header_color;
