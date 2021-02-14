@@ -65,10 +65,9 @@ class Socket implements MessageComponentInterface {
 
 				$doc->setCell($x, $y, $value);
 				foreach ($this->clients as $client) {
-					if ($from->resourceId == $client->resourceId) {
-						continue;
+					if ($from->resourceId != $client->resourceId && $client->document_id == $id) {
+						$client->send($msg);
 					}
-					$client->send($msg);
 				}
 			}
 
