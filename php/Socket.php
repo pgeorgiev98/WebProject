@@ -65,10 +65,9 @@ class Socket implements MessageComponentInterface {
 
 				$doc->setCell($x, $y, $value);
 				foreach ($this->clients as $client) {
-					if ($from->resourceId == $client->resourceId) {
-						continue;
+					if ($from->resourceId != $client->resourceId && $client->document_id == $id) {
+						$client->send($msg);
 					}
-					$client->send($msg);
 				}
 			}
 
@@ -88,7 +87,7 @@ class Socket implements MessageComponentInterface {
 			$freeDocument = ($document->getSecondsSinceAccessed() > 120); // TODO: hardcoded constant
 			if ($document->isDirty() || $freeDocument) {
 				echo "Saving document " . $document->id . "\n";
-				if (!$this->dbconn->query("UPDATE documents SET table_data='" . json_encode($document->rows) . "'")) {
+				if (!$this->dbconn->query("UPDATE documents SET table_data='" . json_encode($document->rows) . "' WHERE id='" . $document->id . "'")) {
 					echo "Failed: " . $this->dbconn->error . "\n";
 				} else {
 					$document->onSaved();
