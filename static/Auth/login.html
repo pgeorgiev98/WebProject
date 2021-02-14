@@ -3,27 +3,31 @@
    <head>
       <meta charset="utf-8">
       <title>Login</title>
+      <link rel="stylesheet" href="styles.css">
    </head>
    <body>
-      <div>
-         <h1>Login Page</h1>
+      <div class="box">
+         <h1>Login</h1>
          <form method="POST" action="">
-            <table>
-               <tr>
-                  <td>Въведете факултетен номер:</td>
-                  <td><input id = "facultyNumber" type="number"  name="facultyNumber" required> </td>
-               </tr>
-               <tr>
-                  <td>Въведете парола:</td>
-                  <td><input type="password" id="password" name = "password" required></td>
-               </tr>
-            </table>
-            <p><input type="button" id="login" value="Влез">
+            <div >
+                <input id = "facultyNumber" type="number" class = "Inputs"  name="facultyNumber" placeholder="Факултетен номер" required/> 
+                <input type="password" id="password" class = "Inputs" name = "password" placeholder="Парола" required/>
+                <div class="text-center">
+                   <p>
+                     <button class="btn btn-primary" type="button" id="login" value="Влез">Влез</button>
+                   </p>
+                </div>
+            </div>
          </form>
+         <br>
          <div id="messageHolder">
 
          </div>
+         <a href="./registration.html">Регистрация</a>
+         <br>
+         <br>
       </div>
+      
 
       <script type="text/javascript" src="LoginRequest.js"></script>
    </body>
