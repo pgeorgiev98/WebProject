@@ -3,6 +3,7 @@ $servername = "localhost";
 $username = "sheets";
 $password = "badpassword";
 $db = "sheets";
+session_start();
 
 function bad_request() {
 	http_response_code(400);
@@ -42,8 +43,9 @@ if ($conn->connect_error) {
 }
 
 $id = random_document_id();
+$owner_id = $_SESSION["userID"];
 query($conn, "use " . $db);
-query($conn, "INSERT INTO documents(id, table_data) VALUES('" . $id . "', '[]')");
+query($conn, "INSERT INTO documents(id, table_data, owner_id) VALUES('" . $id . "', '[]', '$owner_id')");
 
 echo json_encode(array(
 	"id" => $id,

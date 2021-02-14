@@ -36,8 +36,8 @@
     if ($result->num_rows > 0) {
         if ($row = $result->fetch_assoc()) {
             if (strcmp($row["password"], $password) == 0) {
-                exit($row["password"] . " " . $password);
-                $_SESSION["userID"] = $id;
+                // exit($row["password"] . " " . $password);
+                $_SESSION["userID"] = $row["id"];
                 http_response_code(200);
             } else {
                 http_response_code(404); // Wrong Pass
