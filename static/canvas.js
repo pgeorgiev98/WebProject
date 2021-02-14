@@ -77,12 +77,6 @@ input.addEventListener("keydown", function (event) {
 
         cell = table.getCell(newRow, table.onFocus.col);
         table.onFocus = cell;
-
-        document.getElementById("input-value").value = table.onFocus.text;
-        document.getElementById("input-value").focus();
-
-        clickOnFocusStyles();
-        table.update();
     }
     if (event.key == "Tab") {
         event.preventDefault();
@@ -94,18 +88,17 @@ input.addEventListener("keydown", function (event) {
         cell = table.getCell(table.onFocus.row, newCol);
         table.onFocus = table.getCell(table.onFocus.row, 0);
         table.onFocus = cell;
-
-        document.getElementById("input-value").value = table.onFocus.text;
-        document.getElementById("input-value").focus();
-
-        clickOnFocusStyles();
-        table.update();
     }
     if(event.key == "Delete") {
         table.onFocus.setText("");
         document.getElementById("input-value").value = table.onFocus.text;
         table.update();
     }
+    document.getElementById("input-value").value = table.onFocus.text;
+    document.getElementById("input-value").focus();
+
+    clickOnFocusStyles();
+    table.update();
 });
 
 input.addEventListener("input", function (event) {
