@@ -53,9 +53,9 @@ class Document {
 			foreach ($row as $cell) {
 				$str = (empty($cell) ? '' : $cell[0]);
 				$str = str_replace($sep, '?', $str);
-				$next_row[] = $str;
+				$new_row[] = $str;
 			}
-			$csv .= join($sep, $next_row);
+			$csv .= join($sep, $new_row);
 			$csv .= "\n";
 		}
 		return $csv;
