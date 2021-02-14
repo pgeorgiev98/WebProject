@@ -1,8 +1,24 @@
 const table = document.getElementById("documents_table");
-const url = "../php/used_documents.php";
+const getDocURL = "../php/used_documents.php";
 const basicURL = "index.html?id=";
 
+//MARK:- Load documents
 window.onload = getDocuments();
+
+// Get Documents
+function createNewDocument() {
+    fetch("/api/create.php?name=TODO")
+        .then(response => response.json())
+        .then(json => {
+            const id = json["id"]; // TODO: error check
+           console.log("URL:" + basicURL + id )
+           let newUrl = basicURL + id;
+           document.location.href = newUrl;
+        })
+        .catch((error) => {
+            console.log("Error: " + error); // TODO
+        });
+}
 
 function addEvents(){
     document.querySelectorAll(".document").forEach((doc) => {
@@ -32,7 +48,7 @@ function fillDocuments(data){
 
 function getDocuments(){
     var xhttp = new XMLHttpRequest();
-    xhttp.open("GET", url, true); 
+    xhttp.open("GET", getDocURL, true); 
     xhttp.setRequestHeader("Content-Type", "application/json");
     xhttp.onreadystatechange = function() {
         let message = "";
@@ -51,3 +67,4 @@ function getDocuments(){
     
     xhttp.send();
 }
+

@@ -21,7 +21,7 @@ function ValidateInputs() {
 }
 
 function loadMainWindow() {
-    window.location.href = "../index.html"
+    window.location.href = "../main_page.php";
 }
 
 function RegisterUser(){
