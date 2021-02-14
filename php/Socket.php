@@ -87,7 +87,7 @@ class Socket implements MessageComponentInterface {
 			$freeDocument = ($document->getSecondsSinceAccessed() > 120); // TODO: hardcoded constant
 			if ($document->isDirty() || $freeDocument) {
 				echo "Saving document " . $document->id . "\n";
-				if (!$this->dbconn->query("UPDATE documents SET table_data='" . json_encode($document->rows) . "'")) {
+				if (!$this->dbconn->query("UPDATE documents SET table_data='" . json_encode($document->rows) . "' WHERE id='" . $document->id . "'")) {
 					echo "Failed: " . $this->dbconn->error . "\n";
 				} else {
 					$document->onSaved();
