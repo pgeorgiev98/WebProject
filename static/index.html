@@ -10,6 +10,7 @@
 		<div class="document-buttons">
 			<button id="create-new-table-button">Create new table</button>
 			<button id="download-csv-button">Download as CSV</button>
+			<button id="upload-csv-button">Upload CSV</button>
 		</div>
 
 		<div id="csv-download-form" class="form-popup">
@@ -18,7 +19,7 @@
 
 				<div>
 					<label for="separator">Column separator:</label>
-					<select name="separator" id="separator-select">
+					<select name="separator" id="download-separator-select">
 						<option value="comma">Comma (,)</option>
 						<option value="dot">Dot (.)</option>
 						<option value="semicolon">Semicolon (;)</option>
@@ -30,10 +31,31 @@
 				<a id="csv-download-link" href="" download="">
 					<button type="button" class="btn" onclick="downloadCsv()">Download</button>
 				</a>
-				<button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
+				<button type="button" class="btn cancel" onclick="closeDownloadForm()">Cancel</button>
 			</form>
 		</div>
 
+		<div id="csv-upload-form" class="form-popup">
+			<form>
+				<h2>Upload CSV</h2>
+
+				<input id="file-upload" type="file"></button>
+
+				<div>
+					<label for="separator">Column separator:</label>
+					<select name="separator" id="upload-separator-select">
+						<option value="comma">Comma (,)</option>
+						<option value="dot">Dot (.)</option>
+						<option value="semicolon">Semicolon (;)</option>
+						<option value="colon">Colon (:)</option>
+						<option value="tab">Tab</option>
+					</select>
+				</div>
+
+				<button type="button" class="btn" onclick="uploadCsv()">Upload</button>
+				<button type="button" class="btn cancel" onclick="closeUploadForm()">Cancel</button>
+			</form>
+		</div>
 
 		<div class="style-buttons">
 			<button id="bold-button">
