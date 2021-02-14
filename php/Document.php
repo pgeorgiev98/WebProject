@@ -45,6 +45,21 @@ class Document {
 	public function getSecondsSinceAccessed() {
 		return (new \DateTime())->getTimestamp() - $this->last_accessed->getTimestamp();
 	}
+
+	public function asCsv($sep) {
+		$csv = "";
+		foreach ($this->rows as $row) {
+			$new_row = [];
+			foreach ($row as $cell) {
+				$str = (empty($cell) ? '' : $cell[0]);
+				$str = str_replace($sep, '?', $str);
+				$next_row[] = $str;
+			}
+			$csv .= join($sep, $next_row);
+			$csv .= "\n";
+		}
+		return $csv;
+	}
 }
 
 ?>

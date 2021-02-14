@@ -28,12 +28,9 @@ class DocumentManager {
 	public function loadDocumentFromDB(string $id) {
 		$result = $this->dbconn->query("SELECT table_data FROM documents WHERE id='" . $id . "'");
 		$document = null;
-		if (!$result) {
-			echo $this->dbconn->error . '\n';
-		} else {
+		if ($result) {
 			$row = $result->fetch_assoc();
 			if ($row) {
-				echo "Load " . $id . "\n";
 				$rows = json_decode($row["table_data"]);
 				$document = new Document($id, "TODO");
 				$document->rows = $rows;
@@ -47,7 +44,6 @@ class DocumentManager {
 	}
 
 	public function freeDocument(string $id) {
-		echo 'Free ' . $id . "\n";
 		unset($this->documents[$id]);
 	}
 }
