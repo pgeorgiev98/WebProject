@@ -1,35 +1,13 @@
 <?php
+	require '../php/db_config.php';
+
     session_start();
-
-    function query(mysqli $conn, string $q) {
-        if (!$conn->query($q)) {
-            internal_server_error();
-        } 
-    }
-
-    function internal_server_error() {
-        http_response_code(500);
-        exit("500 - Internal Server Error");
-    }
-
-    $servername = "localhost";
-    $usernameDB = "sheets";
-    $passwordDB = "badpassword";
-    $db = "sheets";
-
-    $link = mysqli_connect($servername, $usernameDB, $passwordDB, $db);
-    $conn = new mysqli($servername, $usernameDB, $passwordDB);
-
-    if ($conn->connect_error) {
-        internal_server_error();
-    }
 
     $data = json_decode(file_get_contents("php://input"));
     $facultyNumber = $data->facultyNumber;
     $password = $data->password;
 
     $sql = "SELECT * FROM users WHERE facultyNumber = $facultyNumber"; 
-    query($conn, "use " . $db);
     $result = $conn->query($sql);
 
     
