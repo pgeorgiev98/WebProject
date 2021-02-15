@@ -39,7 +39,6 @@ function Login() {
         if (this.status == 200) {
             var response = this.responseText;
             console.log("Response" . response);
-            message = "Successful";
             loadMainWindow();
         } else {
             message = "Въвели сте грешен факултетен номер и парола!";

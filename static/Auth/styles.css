@@ -65,6 +65,14 @@ a:hover {
     border-radius: 10px;
 }
 
+.Inputs:focus {
+    outline: none;
+}
+
+button:focus {
+    outline: none;
+}
+
   .p100 {
       width: 100%;
   }

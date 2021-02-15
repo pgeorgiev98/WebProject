@@ -40,15 +40,15 @@
 
         <div id="footer_container" style="display: flex; align-items: right; justify-content: right; position: fixed; bottom: 0%; right: 0%; margin: 16px">
             <a href="https://learn.fmi.uni-sofia.bg/" target="_blank">
-                <img src="img/moodle.jpg" style="height: 50px; width: 100px">
+                <img src="img/moodle.jpg" style="height: 50px; width: 100px; object-fit: contain">
             </a>
 
             <a href="https://susi.uni-sofia.bg/ISSU/forms/Login.aspx" target="_blank">
-                <img src="img/susi.jpg" style="height: 50px; width: 150px">
+                <img src="img/susi.jpg" style="height: 50px; width: 150px; object-fit: contain">
             </a>
 
             <a href="http://w15ref.w3c.fmi.uni-sofia.bg/" target="_blank">
-                <img src="img/puffin.png" style="height: 50px; width: 100px">
+                <img src="img/puffin.png" style="height: 50px; width: 100px; object-fit: contain">
             </a>
             <a id="logout_button">
                 <button type="button" class="btn-primary wauto hauto" >Излез</button>
