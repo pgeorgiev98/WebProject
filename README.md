@@ -1,9 +1,18 @@
 # Групово редактиране на таблица
 
 ## Инсталация и настройки
-Open a terminal and navigate to the project:
+
+Стартира се база данни MariaDB. Със скрипта init_db_user.sql се създава необходимия за проекта потребител и му се дават необходимите привилегии, а със скрипта init_db.sql се създава базата данни с необходимите таблици.
+
+Инсталира се Ratchet с Composer чрез командата:
 ```
 composer install
+```
+
+## Стартиране
+
+WebSocket сървъра се стартира на порт 8080 с командата:
+```
 php WebSocketServer.php
 ```
 
@@ -12,7 +21,7 @@ Open another terminal and run:
 php -S 0.0.0.0:8000
 ```
 
-In a browser open [http://localhost:8000/static/index.html](http://localhost:8000/static/index.html)
+In a browser open [http://localhost:8000/static/main_page.html](http://localhost:8000/static/index.html)
 
 ## Кратко ръководство за потребителя:
 ![login](/static/img/login.png)
