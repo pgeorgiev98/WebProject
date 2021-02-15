@@ -21,7 +21,7 @@ Open another terminal and run:
 php -S 0.0.0.0:8000
 ```
 
-In a browser open [http://localhost:8000/static/main_page.html](http://localhost:8000/static/index.html)
+In a browser open [http://localhost:8000/static/main_page.php](http://localhost:8000/static/main_page.php)
 
 ## Кратко ръководство за потребителя:
 ![login](/static/img/login.png)
